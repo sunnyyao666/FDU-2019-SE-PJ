@@ -1,42 +1,48 @@
 package fudan.se.lab2.service;
 
 import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
-import fudan.se.lab2.security.jwt.JwtTokenUtil;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.AuthorityRepository;
 import fudan.se.lab2.repository.UserRepository;
 import fudan.se.lab2.controller.request.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.HashSet;
+
 /**
- * @author LBW
+ * @author YHT
  */
 @Service
 public class AuthService {
     private UserRepository userRepository;
     private AuthorityRepository authorityRepository;
+    private PasswordEncoder encoder;
 
     @Autowired
-    public AuthService(UserRepository userRepository, AuthorityRepository authorityRepository) {
+    public AuthService(UserRepository userRepository, AuthorityRepository authorityRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
+        this.encoder = encoder;
     }
 
-    public User register(RegisterRequest request) {
-        // TODO: Implement the function.
-        return null;
+    public User register(RegisterRequest request) throws UsernameHasBeenRegisteredException {
+        String username = request.getUsername();
+        User user = userRepository.findByUsername(username);
+        if (user != null) throw new UsernameHasBeenRegisteredException(username);
+        user = new User(username, encoder.encode(request.getPassword()), request.getFullname(), new HashSet<>(Collections.singletonList(authorityRepository.findByAuthority("User"))));
+        userRepository.save(user);
+        return user;
     }
 
-    public String login(String username, String password) {
-        // TODO: Implement the function.
-        return null;
+    public String login(String username, String password) throws UsernameNotFoundException{
+        User user = userRepository.findByUsername(username);
+        if (user == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
+        if (!encoder.matches(password, user.getPassword())) return "Wrong password";
+        return "success";
     }
 
 
