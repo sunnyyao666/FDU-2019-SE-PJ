@@ -19,17 +19,44 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Write your code to make this filter works.
- *
- * @author LBW
+ * @author YHT
  */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+    private JwtUserDetailsService userDetailsService;
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    public JwtRequestFilter(JwtUserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil) {
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // TODO: Implement the filter.
+        final String requestTokenHeader = request.getHeader("Authorization");
+
+        String username = null;
+        String jwtToken = null;
+        System.out.println(1);
+        // JWT报文表头的格式是"Bearer token". 去除"Bearer ",直接获取token
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            jwtToken = requestTokenHeader.substring(7);
+            username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+
+            // Once we get the token validate it.
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                // if token is valid configure Spring Security to manually set authentication
+                if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                }
+            }
+        }
+
         filterChain.doFilter(request, response);
     }
 }

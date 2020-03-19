@@ -2,9 +2,11 @@ package fudan.se.lab2.service;
 
 import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
 import fudan.se.lab2.domain.User;
+import fudan.se.lab2.exception.WrongPasswordException;
 import fudan.se.lab2.repository.AuthorityRepository;
 import fudan.se.lab2.repository.UserRepository;
 import fudan.se.lab2.controller.request.RegisterRequest;
+import fudan.se.lab2.security.jwt.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,11 +40,11 @@ public class AuthService {
         return user;
     }
 
-    public String login(String username, String password) throws UsernameNotFoundException{
+    public User login(String username, String password) throws UsernameNotFoundException,WrongPasswordException{
         User user = userRepository.findByUsername(username);
         if (user == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
-        if (!encoder.matches(password, user.getPassword())) return "Wrong password";
-        return "success";
+        if (!encoder.matches(password, user.getPassword())) throw new WrongPasswordException(username);
+        return user;
     }
 
 

@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * @author LBW
+ * @author YHT
  */
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
@@ -20,7 +20,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // TODO: Implement the function.
-        throw new UsernameNotFoundException("User: '" + username + "' not found.");
+        User user = userRepository.findByUsername(username);
+        if (user == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
+        return user;
     }
 }
