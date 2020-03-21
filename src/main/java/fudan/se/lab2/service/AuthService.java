@@ -40,11 +40,14 @@ public class AuthService {
         return user;
     }
 
+
     public User login(String username, String password) throws UsernameNotFoundException,WrongPasswordException{
         User user = userRepository.findByUsername(username);
         if (user == null) throw new UsernameNotFoundException("User: '" + username + "' not found.");
         if (!encoder.matches(password, user.getPassword())) throw new WrongPasswordException(username);
         return user;
+        
+
     }
 
 
