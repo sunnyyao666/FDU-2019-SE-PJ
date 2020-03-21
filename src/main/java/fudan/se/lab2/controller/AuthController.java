@@ -37,12 +37,12 @@ public class AuthController {
     }
 
 
-    @GetMapping("/register")
-    public ResponseEntity<?> register(String username, String password) {
-        logger.debug("RegistrationForm: " + username+password);
-        return ResponseEntity.ok(authService.register(new RegisterRequest(username,password,"1",null)));
-    }
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        logger.debug("RegistrationForm: " + request.toString());
 
+        return ResponseEntity.ok(authService.register(request));
+    }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
        // logger.debug("LoginForm: " + request.toString());
