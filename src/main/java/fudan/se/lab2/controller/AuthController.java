@@ -2,7 +2,9 @@ package fudan.se.lab2.controller;
 
 import fudan.se.lab2.service.AuthService;
 import fudan.se.lab2.service.JwtUserDetailsService;
+import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.User;
+import fudan.se.lab2.controller.request.ConferenceApplyRequest;
 import fudan.se.lab2.controller.request.LoginRequest;
 import fudan.se.lab2.controller.request.RegisterRequest;
 import fudan.se.lab2.security.jwt.JwtTokenUtil;
@@ -51,6 +53,13 @@ public class AuthController {
         builder.header("token",jwtTokenUtil.generateToken(user));
         return builder.body(user);
     }
+
+    @PostMapping("/apply")
+    public ResponseEntity<?> conferenceApply(@RequestBody ConferenceApplyRequest request) {
+        
+        return ResponseEntity.ok(authService.conferenceApply(request));
+    }
+
 
     /**
      * This is a function to test your connectivity. (健康测试时，可能会用到它）.

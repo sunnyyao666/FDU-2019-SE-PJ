@@ -40,6 +40,7 @@ public class Lab2Application {
                 // Create authorities if not exist.
                 Authority adminAuthority = getOrCreateAuthority("Admin", authorityRepository);
                 Authority userAuthority = getOrCreateAuthority("User", authorityRepository);
+                Authority ConferenceAuthority = getOrCreateAuthority("Conference", authorityRepository);
 
                 // Create an admin if not exists.
                 if (userRepository.findByUsername("admin") == null) {
