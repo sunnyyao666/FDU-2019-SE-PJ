@@ -11,7 +11,9 @@ public class Conference implements Serializable{
     private Long id;
 
     @Column(unique = true)
-    private String conferenceName;
+    private String fullName;
+
+    private String abbreviation;
 
     @ManyToOne
     private User creator;
@@ -19,13 +21,13 @@ public class Conference implements Serializable{
     public Conference() {
     }
 
-    public Conference(String conferenceName, User creator) {
-        this.conferenceName = conferenceName;
+    public Conference(String fullName, User creator) {
+        this.fullName = fullName;
         this.creator= creator;
     }
 
-    public String getConferenceName() {
-        return conferenceName;
+    public String getFullName() {
+        return fullName;
     }
 
     public User getCreator() {

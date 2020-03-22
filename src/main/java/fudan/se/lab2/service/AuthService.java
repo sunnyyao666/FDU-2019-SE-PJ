@@ -38,10 +38,10 @@ public class AuthService {
     }
 
     public Conference conferenceApply(ConferenceApplyRequest request) throws BadCredentialsException {
-        String conferenceName = request.getConferenceName();
+        String fullName = request.getFullName();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
-        Conference conference = new Conference(conferenceName, (User) userDetails);
+        Conference conference = new Conference(fullName, (User) userDetails);
         conferenceRepository.save(conference);
         return conference;
     }
