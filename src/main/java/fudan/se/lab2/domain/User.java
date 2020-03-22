@@ -28,6 +28,10 @@ public class User implements UserDetails {
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
+    @OneToMany(mappedBy = "creator")
+    private Set<Conference> conferences = new HashSet<>();
+
+
 
     public User() {}
     public User(String username, String password, String fullname, Set<Authority> authorities) {

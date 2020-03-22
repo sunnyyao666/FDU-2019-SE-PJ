@@ -34,13 +34,6 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(WrongPasswordException.class)
-    ResponseEntity<?> handlerWrongPasswordException(WrongPasswordException ex, WebRequest request) {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     ResponseEntity<?> handleBadCredentialsException(BadCredentialsException ex) {
         Map<String, String> response = new HashMap<>();

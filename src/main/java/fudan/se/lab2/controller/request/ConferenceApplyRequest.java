@@ -1,19 +1,19 @@
 package fudan.se.lab2.controller.request;
 
 /**
- * @author LBW
+ * @author YHT
  */
 public class ConferenceApplyRequest {
-    private String fullname;
+    private String conferenceName;
 
     public ConferenceApplyRequest() {}
 
 
-    public String getFullname() {
-        return fullname;
+    public String getConferenceName() {
+        return conferenceName;
     }
 
-    public void setFullname(String username) {
-        this.fullname = username;
+    public void setConferenceName(String conferenceName) {
+        this.conferenceName = conferenceName;
     }
 }
