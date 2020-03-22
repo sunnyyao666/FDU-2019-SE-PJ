@@ -39,7 +39,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwtToken = null;
-        System.out.println(1);
         // JWT报文表头的格式是"Bearer token". 去除"Bearer ",直接获取token
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);

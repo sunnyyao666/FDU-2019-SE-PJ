@@ -39,9 +39,9 @@ public class AuthService {
 
     public Conference conferenceApply(ConferenceApplyRequest request) throws BadCredentialsException {
         String conferenceName = request.getConferenceName();
-        //UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //if (userDetails == null) throw new BadCredentialsException("Not authorized.");
-        Conference conference = new Conference(conferenceName, userRepository.findByUsername("admin"));
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
+        Conference conference = new Conference(conferenceName, (User) userDetails);
         conferenceRepository.save(conference);
         return conference;
     }
