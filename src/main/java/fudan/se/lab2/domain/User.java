@@ -1,7 +1,6 @@
 package fudan.se.lab2.domain;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -29,7 +28,7 @@ public class User implements UserDetails {
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "creator")
     private Set<Conference> conferences = new HashSet<>();
 
 
@@ -99,7 +98,7 @@ public class User implements UserDetails {
         this.conferences = conferences;
     }
 
-    public Set<Conference> getConferences() {
+    public Collection<?> getConferences() {
         return conferences;
     }
 

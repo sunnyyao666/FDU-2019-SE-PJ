@@ -41,4 +41,10 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(ConferenceNameDuplicatedExecption.class)
+    ResponseEntity<?> handleConferenceNameDuplicatedException(ConferenceNameDuplicatedExecption ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }

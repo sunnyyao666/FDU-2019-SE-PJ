@@ -1,6 +1,7 @@
 package fudan.se.lab2.service;
 
 import fudan.se.lab2.domain.Conference;
+import fudan.se.lab2.exception.ConferenceNameDuplicatedExecption;
 import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.AuthorityRepository;
@@ -37,11 +38,13 @@ public class AuthService {
         this.encoder = encoder;
     }
 
-    public Conference conferenceApply(ConferenceApplyRequest request) throws BadCredentialsException {
+    public Conference conferenceApply(ConferenceApplyRequest request) throws BadCredentialsException, ConferenceNameDuplicatedExecption {
         String fullName = request.getFullName();
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
-        Conference conference = new Conference(fullName, (User) userDetails);
+        Conference conference = conferenceRepository.findByFullName(request.getFullName());
+        if (conference != null) throw new ConferenceNameDuplicatedExecption(request.getFullName());
+        conference = new Conference(fullName, (User) userDetails);
         conferenceRepository.save(conference);
         return conference;
     }
