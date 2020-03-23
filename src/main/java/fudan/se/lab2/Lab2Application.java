@@ -14,11 +14,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 /**
- * Welcome to 2020 Software Engineering Lab2.
- * This is your first lab to write your own code and build a spring boot application.
- * Enjoy it :)
- *
- * @author LBW
+ * @author YHT
  */
 @SpringBootApplication
 public class Lab2Application {
@@ -29,8 +25,6 @@ public class Lab2Application {
 
     /**
      * This is a function to create some basic entities when the application starts.
-     * Now we are using a In-Memory database, so you need it.
-     * You can change it as you like.
      */
     @Bean
     public CommandLineRunner dataLoader(UserRepository userRepository, AuthorityRepository authorityRepository, PasswordEncoder passwordEncoder) {
@@ -47,7 +41,8 @@ public class Lab2Application {
                     User admin = new User(
                             "admin",
                             passwordEncoder.encode("password"),
-                            "Yao Hongtao",
+                            "18302010017@fudan.edu.cn",
+                            "Fudan University",
                             new HashSet<>(Collections.singletonList(adminAuthority))
                     );
                     userRepository.save(admin);

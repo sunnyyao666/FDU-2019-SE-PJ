@@ -3,20 +3,23 @@ package fudan.se.lab2.controller.request;
 import java.util.Set;
 
 /**
- * @author LBW
+ * @author YHT
  */
 public class RegisterRequest {
     private String username;
     private String password;
-    private String fullname;
+    private String email;
+    private String office;
     private Set<String> authorities;
 
-    public RegisterRequest() {}
+    public RegisterRequest() {
+    }
 
-    public RegisterRequest(String username, String password, String fullname, Set<String> authorities) {
+    public RegisterRequest(String username, String password, String email, String office, Set<String> authorities) {
         this.username = username;
         this.password = password;
-        this.fullname = fullname;
+        this.email = email;
+        this.office = office;
         this.authorities = authorities;
     }
 
@@ -36,12 +39,20 @@ public class RegisterRequest {
         this.password = password;
     }
 
-    public String getFullname() {
-        return fullname;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setOffice(String office) {
+        this.office = office;
+    }
+
+    public String getOffice() {
+        return office;
     }
 
     public Set<String> getAuthorities() {

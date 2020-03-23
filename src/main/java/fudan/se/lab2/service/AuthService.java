@@ -50,7 +50,7 @@ public class AuthService {
         String username = request.getUsername();
         User user = userRepository.findByUsername(username);
         if (user != null) throw new UsernameHasBeenRegisteredException(username);
-        user = new User(username, encoder.encode(request.getPassword()), request.getFullname(), new HashSet<>(Collections.singletonList(authorityRepository.findByAuthority("User"))));
+        user = new User(username, encoder.encode(request.getPassword()), request.getEmail(), request.getOffice(), new HashSet<>(Collections.singletonList(authorityRepository.findByAuthority("User"))));
         userRepository.save(user);
         return user;
     }

@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * @author LBW
+ * @author YHT
  */
 @Configuration
 public class CorsConfig {
