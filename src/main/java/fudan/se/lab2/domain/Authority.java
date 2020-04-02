@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 /**
- * @author LBW
+ * @author YHT
  */
 @Entity
 public class Authority implements GrantedAuthority {
@@ -18,18 +18,20 @@ public class Authority implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
     private String authority;
 
-    @ManyToMany(mappedBy = "authorities")
+    @ManyToOne
     @JsonIgnore
-    private Set<User> users;
+    private User user;
+
+    private Conference conference;
 
     public Authority() {
     }
 
-    public Authority(String authority) {
+    public Authority(String authority, Conference conference) {
         this.authority = authority;
+        this.conference = conference;
     }
 
     @Override
@@ -49,11 +51,19 @@ public class Authority implements GrantedAuthority {
         this.authority = authority;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Conference getConference() {
+        return conference;
+    }
+
+    public void setConference(Conference conference) {
+        this.conference = conference;
     }
 }

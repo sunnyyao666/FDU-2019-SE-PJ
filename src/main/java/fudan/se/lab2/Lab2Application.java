@@ -32,15 +32,14 @@ public class Lab2Application {
             @Override
             public void run(String... args) throws Exception {
                 // Create authorities if not exist.
-                Authority adminAuthority = getOrCreateAuthority("Admin", authorityRepository);
-                Authority userAuthority = getOrCreateAuthority("User", authorityRepository);
-                Authority ConferenceAuthority = getOrCreateAuthority("Conference", authorityRepository);
+                Authority adminAuthority = new Authority("Admin",null);
 
                 // Create an admin if not exists.
                 if (userRepository.findByUsername("admin") == null) {
                     User admin = new User(
                             "admin",
                             passwordEncoder.encode("password"),
+                            "Yao Hongtao",
                             "18302010017@fudan.edu.cn",
                             "Fudan University",
                             new HashSet<>(Collections.singletonList(adminAuthority))
@@ -49,14 +48,14 @@ public class Lab2Application {
                 }
             }
 
-            private Authority getOrCreateAuthority(String authorityText, AuthorityRepository authorityRepository) {
-                Authority authority = authorityRepository.findByAuthority(authorityText);
-                if (authority == null) {
-                    authority = new Authority(authorityText);
-                    authorityRepository.save(authority);
-                }
-                return authority;
-            }
+//            private Authority getOrCreateAuthority(String authorityText, AuthorityRepository authorityRepository) {
+//                Authority authority = authorityRepository.findByAuthority(authorityText);
+//                if (authority == null) {
+//                    authority = new Authority(authorityText);
+//                    authorityRepository.save(authority);
+//                }
+//                return authority;
+//            }
         };
     }
 }

@@ -22,30 +22,26 @@ public class User implements UserDetails {
     private String username;
 
     private String password;
+    private String fullName;
     private String email;
     private String office;
 
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Authority> authorities = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "creator")
     private Set<Conference> conferences = new HashSet<>();
 
-
     public User() {
     }
 
-    public User(String username, String password, String email, String office, Set<Authority> authorities) {
+    public User(String username, String password, String fullName, String email, String office, Set<Authority> authorities) {
         this.username = username;
         this.password = password;
+        this.fullName = fullName;
         this.email = email;
         this.office = office;
         this.authorities = authorities;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
     }
 
     @Override
@@ -56,6 +52,11 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
@@ -94,12 +95,12 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public void setConferences(Set<Conference> conferences) {
-        this.conferences = conferences;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public Collection<?> getConferences() {
-        return conferences;
+    public String getFullName() {
+        return fullName;
     }
 
     public void setEmail(String email) {
@@ -120,5 +121,13 @@ public class User implements UserDetails {
 
     public void setAuthorities(Set<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public void setConferences(Set<Conference> conferences) {
+        this.conferences = conferences;
+    }
+
+    public Collection<?> getConferences() {
+        return conferences;
     }
 }

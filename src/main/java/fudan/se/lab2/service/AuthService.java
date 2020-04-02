@@ -17,9 +17,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashSet;
-
 /**
  * @author YHT
  */
@@ -44,7 +41,7 @@ public class AuthService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         Conference conference = conferenceRepository.findByFullName(request.getFullName());
         if (conference != null) throw new ConferenceNameDuplicatedExecption(request.getFullName());
-        conference = new Conference(fullName, (User) userDetails);
+        conference = new Conference(request.getAbbreviation(), fullName, request.getPlace(), request.getStartDate(), request.getEndDate(), request.getDeadline(), request.getReleaseTime(), userRepository.findByUsername(userDetails.getUsername()));
         conferenceRepository.save(conference);
         return conference;
     }
@@ -53,7 +50,7 @@ public class AuthService {
         String username = request.getUsername();
         User user = userRepository.findByUsername(username);
         if (user != null) throw new UsernameHasBeenRegisteredException(username);
-        user = new User(username, encoder.encode(request.getPassword()), request.getEmail(), request.getOffice(), new HashSet<>(Collections.singletonList(authorityRepository.findByAuthority("User"))));
+        user = new User(username, encoder.encode(request.getPassword()), request.getFullName(), request.getEmail(), request.getOffice(), null);
         userRepository.save(user);
         return user;
     }
@@ -65,6 +62,4 @@ public class AuthService {
             throw new BadCredentialsException("User: '" + username + "' got wrong password.");
         return user;
     }
-
-
 }

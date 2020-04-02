@@ -8,6 +8,7 @@ import java.util.Set;
 public class RegisterRequest {
     private String username;
     private String password;
+    private String fullName;
     private String email;
     private String office;
     private Set<String> authorities;
@@ -15,28 +16,37 @@ public class RegisterRequest {
     public RegisterRequest() {
     }
 
-    public RegisterRequest(String username, String password, String email, String office, Set<String> authorities) {
+    public RegisterRequest(String username, String password, String fullName, String email, String office, Set<String> authorities) {
         this.username = username;
         this.password = password;
+        this.fullName = fullName;
         this.email = email;
         this.office = office;
         this.authorities = authorities;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 
     public void setEmail(String email) {
@@ -55,12 +65,12 @@ public class RegisterRequest {
         return office;
     }
 
-    public Set<String> getAuthorities() {
-        return authorities;
-    }
-
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
+    }
+
+    public Set<String> getAuthorities() {
+        return authorities;
     }
 }
 
