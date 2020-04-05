@@ -27,6 +27,16 @@ public class ConferenceApplyRequest {
     public ConferenceApplyRequest() {
     }
 
+    public ConferenceApplyRequest(String fullName, String abbreviation, String place, Date startDate, Date endDate, Date deadline, Date releaseTime)
+    {
+        this.fullName = fullName;
+        this.abbreviation = abbreviation;
+        this.place = place;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.deadline = deadline;
+        this.releaseTime = releaseTime;
+    }
 
     public String getFullName() {
         return fullName;

@@ -11,7 +11,6 @@ import java.util.Set;
  */
 @Entity
 public class Authority implements GrantedAuthority {
-
     private static final long serialVersionUID = -8974777274465208640L;
 
     @Id
@@ -20,13 +19,15 @@ public class Authority implements GrantedAuthority {
 
     private String authority;
 
-    @ManyToOne
+    @ManyToMany(mappedBy = "authorities")
     @JsonIgnore
-    private User user;
+    private Set<User> users;
 
     private Conference conference;
 
-    public Authority() {
+    public Authority(String authority) {
+        this.authority = authority;//像管理员这类权限无视会议，不需要会议字段
+
     }
 
     public Authority(String authority, Conference conference) {
@@ -51,12 +52,12 @@ public class Authority implements GrantedAuthority {
         this.authority = authority;
     }
 
-    public User getUser() {
-        return user;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     public Conference getConference() {

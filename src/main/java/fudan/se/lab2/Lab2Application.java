@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author YHT
@@ -32,8 +33,8 @@ public class Lab2Application {
             @Override
             public void run(String... args) throws Exception {
                 // Create authorities if not exist.
-                Authority adminAuthority = new Authority("Admin",null);
-
+                //Authority adminAuthority = new Authority("Admin",null);
+                Authority adminAuthority = getOrCreateAuthority("Admin", authorityRepository);
                 // Create an admin if not exists.
                 if (userRepository.findByUsername("admin") == null) {
                     User admin = new User(
@@ -48,14 +49,14 @@ public class Lab2Application {
                 }
             }
 
-//            private Authority getOrCreateAuthority(String authorityText, AuthorityRepository authorityRepository) {
-//                Authority authority = authorityRepository.findByAuthority(authorityText);
-//                if (authority == null) {
-//                    authority = new Authority(authorityText);
-//                    authorityRepository.save(authority);
-//                }
-//                return authority;
-//            }
+            private Authority getOrCreateAuthority(String authorityText, AuthorityRepository authorityRepository) {
+                Authority authority = authorityRepository.findByAuthority(authorityText);
+                if (authority==null) {
+                    authority = new Authority(authorityText);
+                    authorityRepository.save(authority);
+                }
+                return authority;
+            }
         };
     }
 }
