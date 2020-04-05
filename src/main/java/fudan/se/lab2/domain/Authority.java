@@ -11,7 +11,6 @@ import java.util.Set;
  */
 @Entity
 public class Authority implements GrantedAuthority {
-
     private static final long serialVersionUID = -8974777274465208640L;
 
     @Id

@@ -27,7 +27,6 @@ public class ApplyConferenceRequest {
     public ApplyConferenceRequest() {
     }
 
-
     public String getFullName() {
         return fullName;
     }
