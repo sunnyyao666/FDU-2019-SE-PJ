@@ -35,13 +35,12 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String password, String fullName, String email, String office, Set<Authority> authorities) {
+    public User(String username, String password, String fullName, String email, String office) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
         this.email = email;
         this.office = office;
-        this.authorities = authorities;
     }
 
     @Override

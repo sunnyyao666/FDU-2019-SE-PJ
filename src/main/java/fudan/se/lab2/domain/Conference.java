@@ -22,6 +22,8 @@ public class Conference implements Serializable {
     private Date endDate;
     private Date deadline;
     private Date releaseTime;
+    private boolean applying;
+    private boolean valid;
 
     @ManyToOne
     @JsonIgnore
@@ -39,14 +41,24 @@ public class Conference implements Serializable {
         this.deadline = deadline;
         this.releaseTime = releaseTime;
         this.creator = creator;
+        this.applying = true;
+        this.valid = false;
     }
 
     public String getFullName() {
         return fullName;
     }
 
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
     public User getCreator() {
         return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
     public void setAbbreviation(String abbreviation) {
@@ -97,11 +109,27 @@ public class Conference implements Serializable {
         this.deadline = deadline;
     }
 
+    public Date getReleaseTime() {
+        return releaseTime;
+    }
+
     public void setReleaseTime(Date releaseTime) {
         this.releaseTime = releaseTime;
     }
 
-    public Date getReleaseTime() {
-        return releaseTime;
+    public boolean isApplying() {
+        return applying;
+    }
+
+    public void setApplying(boolean applying) {
+        this.applying = applying;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 }

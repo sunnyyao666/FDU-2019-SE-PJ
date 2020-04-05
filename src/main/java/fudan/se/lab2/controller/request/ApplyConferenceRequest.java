@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * @author YHT
  */
-public class ConferenceApplyRequest {
+public class ApplyConferenceRequest {
     private String fullName;
     private String abbreviation;
     private String place;
@@ -24,7 +24,7 @@ public class ConferenceApplyRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date releaseTime;
 
-    public ConferenceApplyRequest() {
+    public ApplyConferenceRequest() {
     }
 
 

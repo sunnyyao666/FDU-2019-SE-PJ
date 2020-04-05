@@ -31,9 +31,6 @@ public class Lab2Application {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
-                // Create authorities if not exist.
-                Authority adminAuthority = new Authority("Admin",null);
-
                 // Create an admin if not exists.
                 if (userRepository.findByUsername("admin") == null) {
                     User admin = new User(
@@ -41,9 +38,10 @@ public class Lab2Application {
                             passwordEncoder.encode("password"),
                             "Yao Hongtao",
                             "18302010017@fudan.edu.cn",
-                            "Fudan University",
-                            new HashSet<>(Collections.singletonList(adminAuthority))
+                            "Fudan University"
                     );
+                    Authority adminAuthority = new Authority("Admin", admin, null);
+                    admin.setAuthorities(new HashSet<>(Collections.singletonList(adminAuthority)));
                     userRepository.save(admin);
                 }
             }

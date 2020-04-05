@@ -24,14 +24,15 @@ public class Authority implements GrantedAuthority {
     @JsonIgnore
     private User user;
 
-    private Conference conference;
+    private String conferenceFullName;
 
     public Authority() {
     }
 
-    public Authority(String authority, Conference conference) {
+    public Authority(String authority, User user, String conferenceFullName) {
         this.authority = authority;
-        this.conference = conference;
+        this.user=user;
+        this.conferenceFullName = conferenceFullName;
     }
 
     @Override
@@ -59,11 +60,11 @@ public class Authority implements GrantedAuthority {
         this.user = user;
     }
 
-    public Conference getConference() {
-        return conference;
+    public String getConferenceFullName() {
+        return conferenceFullName;
     }
 
-    public void setConference(Conference conference) {
-        this.conference = conference;
+    public void setConferenceFullName(String conferenceFullName) {
+        this.conferenceFullName = conferenceFullName;
     }
 }
