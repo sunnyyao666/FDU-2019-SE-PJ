@@ -24,6 +24,7 @@ public class Conference implements Serializable {
     private Date releaseTime;
     private boolean applying;
     private boolean valid;
+    private boolean submitting;
 
     @ManyToOne
     @JsonIgnore
@@ -43,6 +44,7 @@ public class Conference implements Serializable {
         this.creator = creator;
         this.applying = true;
         this.valid = false;
+        this.submitting=false;
     }
 
     public String getFullName() {
@@ -131,5 +133,13 @@ public class Conference implements Serializable {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public boolean isSubmitting() {
+        return submitting;
+    }
+
+    public void setSubmitting(boolean submitting) {
+        this.submitting = submitting;
     }
 }
