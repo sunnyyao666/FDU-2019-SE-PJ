@@ -3,8 +3,13 @@ package fudan.se.lab2.controller;
 import fudan.se.lab2.controller.request.*;
 import fudan.se.lab2.service.ConferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author YHT
@@ -14,8 +19,8 @@ public class ConferenceController {
     private ConferenceService conferenceService;
 
     @Autowired
-    public ConferenceController(ConferenceService conferenceService){
-        this.conferenceService=conferenceService;
+    public ConferenceController(ConferenceService conferenceService) {
+        this.conferenceService = conferenceService;
     }
 
     @PostMapping("/apply")
@@ -53,6 +58,17 @@ public class ConferenceController {
     @PostMapping("/changeSubmissionState")
     public ResponseEntity<?> changeSubmissionState(@RequestBody AuditApplicationRequest request) {
         return ResponseEntity.ok(conferenceService.changeSubmissionState(request.getConferenceFullName(), request.isPassed()));
+    }
+
+    @PostMapping("/submit")
+    public ResponseEntity<?> submitThesis(@RequestBody SubmitThesisRequest request) {
+        try {
+            return ResponseEntity.ok(conferenceService.submitThesis(request.getConferenceFullName(), request.getTitle(), request.getSummary(), request.getFile()));
+        } catch (IOException ex) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", ex.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

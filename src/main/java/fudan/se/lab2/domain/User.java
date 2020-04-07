@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.*;
 
 /**
- * @author LBW
+ * @author YHT
  */
 @Entity
 public class User implements UserDetails {
@@ -32,6 +32,9 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "creator")
     private Set<Conference> conferences = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "author")
+    private Set<Thesis> theses = new HashSet<>();
+
     public User() {
     }
 
@@ -44,18 +47,30 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getUsername() {
         return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public Set<Authority> getAuthorities() {
         return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 
     @Override
@@ -86,47 +101,43 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public String getFullName() {
+        return fullName;
     }
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getEmail() {
-        return email;
+    public String getOffice() {
+        return office;
     }
 
     public void setOffice(String office) {
         this.office = office;
     }
 
-    public String getOffice() {
-        return office;
-    }
-
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
+    public Collection<?> getConferences() {
+        return conferences;
     }
 
     public void setConferences(Set<Conference> conferences) {
         this.conferences = conferences;
     }
 
-    public Collection<?> getConferences() {
-        return conferences;
+    public Set<Thesis> getTheses() {
+        return theses;
+    }
+
+    public void setTheses(Set<Thesis> theses) {
+        this.theses = theses;
     }
 }

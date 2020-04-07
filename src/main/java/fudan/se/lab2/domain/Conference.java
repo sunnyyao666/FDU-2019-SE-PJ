@@ -22,9 +22,9 @@ public class Conference implements Serializable {
     private Date endDate;
     private Date deadline;
     private Date releaseTime;
-    private boolean applying;
-    private boolean valid;
-    private boolean submitting;
+    private boolean applying; //是否在申请
+    private boolean valid; //是否通过审核
+    private boolean submitting; //是否开放投稿
 
     @ManyToOne
     @JsonIgnore

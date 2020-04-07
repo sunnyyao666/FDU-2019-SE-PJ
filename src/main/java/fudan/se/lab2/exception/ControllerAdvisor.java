@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * You can handle all of your exceptions here.
  *
- * @author LBW
+ * @author YHT
  */
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
@@ -41,8 +41,8 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(ConferenceNameDuplicatedExecption.class)
-    ResponseEntity<?> handleConferenceNameDuplicatedException(ConferenceNameDuplicatedExecption ex) {
+    @ExceptionHandler(ConferenceNameDuplicatedException.class)
+    ResponseEntity<?> handleConferenceNameDuplicatedException(ConferenceNameDuplicatedException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("message", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

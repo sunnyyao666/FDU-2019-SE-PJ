@@ -3,10 +3,10 @@ package fudan.se.lab2.exception;
 /**
  * @author YHT
  */
-public class ConferenceNameDuplicatedExecption extends RuntimeException {
+public class ConferenceNameDuplicatedException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public ConferenceNameDuplicatedExecption(String fullName) {
+    public ConferenceNameDuplicatedException(String fullName) {
         super("Conference '" + fullName + "' was already applying.");
     }
 }
