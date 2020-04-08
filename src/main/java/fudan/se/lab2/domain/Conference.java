@@ -30,6 +30,8 @@ public class Conference implements Serializable {
     @JsonIgnore
     private User creator;
 
+    private String creatorName;
+
     public Conference() {
     }
 
@@ -42,9 +44,10 @@ public class Conference implements Serializable {
         this.deadline = deadline;
         this.releaseTime = releaseTime;
         this.creator = creator;
+        this.creatorName = creator.getUsername();
         this.applying = true;
         this.valid = false;
-        this.submitting=false;
+        this.submitting = false;
     }
 
     public String getFullName() {
@@ -61,6 +64,11 @@ public class Conference implements Serializable {
 
     public void setCreator(User creator) {
         this.creator = creator;
+        this.creatorName = creator.getUsername();
+    }
+
+    public String getCreatorName() {
+        return creatorName;
     }
 
     public void setAbbreviation(String abbreviation) {

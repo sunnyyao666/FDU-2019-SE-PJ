@@ -1,8 +1,10 @@
 package fudan.se.lab2;
 
 import fudan.se.lab2.domain.Authority;
+import fudan.se.lab2.domain.Conference;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.AuthorityRepository;
+import fudan.se.lab2.repository.ConferenceRepository;
 import fudan.se.lab2.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 
 /**
@@ -27,7 +30,7 @@ public class Lab2Application {
      * This is a function to create some basic entities when the application starts.
      */
     @Bean
-    public CommandLineRunner dataLoader(UserRepository userRepository, AuthorityRepository authorityRepository, PasswordEncoder passwordEncoder) {
+    public CommandLineRunner dataLoader(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, PasswordEncoder passwordEncoder) {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
@@ -41,19 +44,20 @@ public class Lab2Application {
                             "Fudan University"
                     );
                     Authority adminAuthority = new Authority("Admin", admin, null);
-                    admin.setAuthorities(new HashSet<>(Collections.singletonList(adminAuthority)));
                     userRepository.save(admin);
+                    authorityRepository.save(adminAuthority);
                 }
+                userRepository.save(new User("11111", "123456", "Zhang Yi", "1@163.com", "1"));
+                userRepository.save(new User("22222", "123456", "Zhang Er", "2@163.com", "2"));
+                userRepository.save(new User("33333", "123456", "Zhang San", "3@163.com", "3"));
+                userRepository.save(new User("44444", "123456", "Zhang Si", "4@163.com", "4"));
+                userRepository.save(new User("55555", "123456", "Zhang Wu", "5@163.com", "5"));
+                conferenceRepository.save(new Conference("12", "12345", "1", new Date(2020, 4, 7), new Date(2020, 4, 7), new Date(2020, 5, 7), new Date(2020, 5, 10), userRepository.findByUsername("11111")));
+                Conference conference = new Conference("24", "23456", "1", new Date(2020, 4, 7), new Date(2020, 4, 7), new Date(2020, 5, 7), new Date(2020, 5, 10), userRepository.findByUsername("11111"));
+                conference.setApplying(false);
+                conference.setValid(true);
+                conferenceRepository.save(conference);
             }
-
-//            private Authority getOrCreateAuthority(String authorityText, AuthorityRepository authorityRepository) {
-//                Authority authority = authorityRepository.findByAuthority(authorityText);
-//                if (authority == null) {
-//                    authority = new Authority(authorityText);
-//                    authorityRepository.save(authority);
-//                }
-//                return authority;
-//            }
         };
     }
 }

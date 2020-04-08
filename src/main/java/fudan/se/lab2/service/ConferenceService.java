@@ -33,7 +33,8 @@ public class ConferenceService {
     private ConferenceRepository conferenceRepository;
     private ThesisRepository thesisRepository;
 
-    public ConferenceService(AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, ThesisRepository thesisRepository) {
+    public ConferenceService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, ThesisRepository thesisRepository) {
+        this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.conferenceRepository = conferenceRepository;
         this.thesisRepository = thesisRepository;
@@ -68,6 +69,10 @@ public class ConferenceService {
         return true;
     }
 
+    public Conference searchConference (String conferenceFullName){
+        return conferenceRepository.findByFullName(conferenceFullName);
+    }
+
     public Set<User> searchUsers(String text, String conferenceFullName) {
         Set<User> users = userRepository.findAllByFullNameContaining(text);
         Set<User> resultUsers = new HashSet<User>();
@@ -82,6 +87,10 @@ public class ConferenceService {
         User user = userRepository.findByUsername(username);
         authorityRepository.save(new Authority("Undetermined PC Member", user, conferenceFullName));
         return true;
+    }
+
+    public Set<Authority> listInviteHistory(String conferenceFullName) {
+        return authorityRepository.findAllByAuthorityContainingAndConferenceFullName("PC Member", conferenceFullName);
     }
 
     public boolean auditPCInvitationApplication(String conferenceFullName, boolean passed) throws BadCredentialsException {
@@ -117,6 +126,8 @@ public class ConferenceService {
         out.close();
         Thesis thesis = new Thesis(title, user, conferenceFullName, summary, thesisPath);
         thesisRepository.save(thesis);
+        if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName) == null)
+            authorityRepository.save(new Authority("Author", user, conferenceFullName));
         return thesis;
     }
 }

@@ -38,6 +38,11 @@ public class ConferenceController {
         return ResponseEntity.ok(conferenceService.auditConferenceApplication(request.getConferenceFullName(), request.isPassed()));
     }
 
+    @PostMapping("/searchConference")
+    public ResponseEntity<?> searchConference(@RequestBody SearchRequest request){
+        return ResponseEntity.ok(conferenceService.searchConference(request.getConferenceFullName()));
+    }
+
     @PostMapping("/searchUsers")
     public ResponseEntity<?> searchUsers(@RequestBody SearchRequest request) {
         return ResponseEntity.ok(conferenceService.searchUsers(request.getText(), request.getConferenceFullName()));
@@ -48,6 +53,11 @@ public class ConferenceController {
         String[] invitee = request.getInvitee();
         for (String username : invitee) conferenceService.invitePCMember(username, request.getConferenceFullName());
         return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/listInviteHistory")
+    public ResponseEntity<?> listInviteHistory(@RequestBody AuditApplicationRequest request){
+        return ResponseEntity.ok(conferenceService.listInviteHistory(request.getConferenceFullName()));
     }
 
     @PostMapping("/auditPCInvitationApplication")

@@ -23,6 +23,7 @@ public class Authority implements GrantedAuthority {
     @JsonIgnore
     private User user;
 
+    private String username;
     private String conferenceFullName;
 
     public Authority() {
@@ -30,7 +31,8 @@ public class Authority implements GrantedAuthority {
 
     public Authority(String authority, User user, String conferenceFullName) {
         this.authority = authority;
-        this.user=user;
+        this.user = user;
+        this.username = user.getUsername();
         this.conferenceFullName = conferenceFullName;
     }
 
@@ -57,6 +59,11 @@ public class Authority implements GrantedAuthority {
 
     public void setUser(User user) {
         this.user = user;
+        this.username = user.getUsername();
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getConferenceFullName() {
