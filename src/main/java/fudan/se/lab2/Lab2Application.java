@@ -45,11 +45,11 @@ public class Lab2Application {
                     userRepository.save(admin);
                     authorityRepository.save(adminAuthority);
                 }
-                userRepository.save(new User("11111", "123456", "Zhang Yi", "1@163.com", "1"));
-                userRepository.save(new User("22222", "123456", "Zhang Er", "2@163.com", "2"));
-                userRepository.save(new User("33333", "123456", "Zhang San", "3@163.com", "3"));
-                userRepository.save(new User("44444", "123456", "Zhang Si", "4@163.com", "4"));
-                userRepository.save(new User("55555", "123456", "Zhang Wu", "5@163.com", "5"));
+                userRepository.save(new User("11111", passwordEncoder.encode("123456"), "Zhang Yi", "1@163.com", "1"));
+                userRepository.save(new User("22222", passwordEncoder.encode("123456"), "Zhang Er", "2@163.com", "2"));
+                userRepository.save(new User("33333", passwordEncoder.encode("123456"), "Zhang San", "3@163.com", "3"));
+                userRepository.save(new User("44444", passwordEncoder.encode("123456"), "Zhang Si", "4@163.com", "4"));
+                userRepository.save(new User("55555", passwordEncoder.encode("123456"), "Zhang Wu", "5@163.com", "5"));
                 conferenceRepository.save(new Conference("12", "12345", "1", new Date(2020, 4, 7), new Date(2020, 4, 7), new Date(2020, 5, 7), new Date(2020, 5, 10), userRepository.findByUsername("11111")));
                 Conference conference = new Conference("24", "23456", "1", new Date(2020, 4, 7), new Date(2020, 4, 7), new Date(2020, 5, 7), new Date(2020, 5, 10), userRepository.findByUsername("11111"));
                 conference.setApplying(false);
