@@ -69,7 +69,7 @@ public class ConferenceService {
         return true;
     }
 
-    public Conference searchConference (String conferenceFullName){
+    public Conference searchConference(String conferenceFullName) {
         return conferenceRepository.findByFullName(conferenceFullName);
     }
 
@@ -78,7 +78,8 @@ public class ConferenceService {
         Set<User> resultUsers = new HashSet<User>();
         for (User user : users)
             if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("PC Member", user, conferenceFullName).isEmpty()
-                    && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Chair", user, conferenceFullName).isEmpty())
+                    && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Chair", user, conferenceFullName).isEmpty()
+                    && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Admin", user, null).isEmpty())
                 resultUsers.add(user);
         return resultUsers;
     }
