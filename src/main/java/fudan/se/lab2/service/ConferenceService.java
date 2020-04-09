@@ -68,6 +68,7 @@ public class ConferenceService {
             conference.setValid(true);
             authorityRepository.save(new Authority("Chair", creator, conference.getFullName()));
         }
+        conferenceRepository.save(conference);
         return true;
     }
 
@@ -117,12 +118,14 @@ public class ConferenceService {
         Authority authority = authorities.iterator().next();
         if (passed) authority.setAuthority("PC Member");
         else authority.setAuthority("Denied PC Member");
+        authorityRepository.save(authority);
         return true;
     }
 
     public boolean changeSubmissionState(String conferenceFullName, boolean passed) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         conference.setSubmitting(passed);
+        conferenceRepository.save(conference);
         return true;
     }
 
