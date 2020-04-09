@@ -77,8 +77,8 @@ public class ConferenceService {
         Set<User> users = userRepository.findAllByFullNameContaining(text);
         Set<User> resultUsers = new HashSet<User>();
         for (User user : users)
-            if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("PC Member", user, conferenceFullName) == null
-                    && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Chair", user, conferenceFullName) == null)
+            if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("PC Member", user, conferenceFullName).isEmpty()
+                    && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Chair", user, conferenceFullName).isEmpty())
                 resultUsers.add(user);
         return resultUsers;
     }
@@ -126,7 +126,7 @@ public class ConferenceService {
         out.close();
         Thesis thesis = new Thesis(title, user, conferenceFullName, summary, thesisPath);
         thesisRepository.save(thesis);
-        if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName) == null)
+        if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName).isEmpty())
             authorityRepository.save(new Authority("Author", user, conferenceFullName));
         return thesis;
     }
