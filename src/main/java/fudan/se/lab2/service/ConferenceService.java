@@ -20,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -51,7 +53,7 @@ public class ConferenceService {
         return conference;
     }
 
-    public Set<Conference> listConferences(String text) throws BadCredentialsException {
+    public Set<Conference> listConferences(String text) {
         if ("admin".equals(text)) return conferenceRepository.findAllByApplying(true);
         else if ("submission".equals(text)) return conferenceRepository.findAllByValid(true);
         return null;
@@ -67,6 +69,18 @@ public class ConferenceService {
             authorityRepository.save(new Authority("Chair", creator, conference.getFullName()));
         }
         return true;
+    }
+
+    public Map<Authority, Conference> listAuthorities() throws BadCredentialsException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        Map<Authority, Conference> result = new HashMap<>();
+        Set<Authority> authorities = user.getAuthorities();
+        for (Authority authority : authorities)
+            if (authority.getAuthority().equals("Chair") || authority.getAuthority().equals("PC Member") || authority.getAuthority().equals("Author"))
+                result.put(authority, conferenceRepository.findByFullName(authority.getConferenceFullName()));
+        return result;
     }
 
     public Conference searchConference(String conferenceFullName) {

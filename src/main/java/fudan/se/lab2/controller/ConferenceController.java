@@ -38,8 +38,13 @@ public class ConferenceController {
         return ResponseEntity.ok(conferenceService.auditConferenceApplication(request.getConferenceFullName(), request.isPassed()));
     }
 
+    @PostMapping("/listAuthorities")
+    public ResponseEntity<?> listAuthorities(@RequestBody SearchRequest request) {
+        return ResponseEntity.ok(conferenceService.listAuthorities());
+    }
+
     @PostMapping("/searchConference")
-    public ResponseEntity<?> searchConference(@RequestBody SearchRequest request){
+    public ResponseEntity<?> searchConference(@RequestBody SearchRequest request) {
         return ResponseEntity.ok(conferenceService.searchConference(request.getConferenceFullName()));
     }
 
@@ -56,7 +61,7 @@ public class ConferenceController {
     }
 
     @PostMapping("/listInviteHistory")
-    public ResponseEntity<?> listInviteHistory(@RequestBody AuditApplicationRequest request){
+    public ResponseEntity<?> listInviteHistory(@RequestBody AuditApplicationRequest request) {
         return ResponseEntity.ok(conferenceService.listInviteHistory(request.getConferenceFullName()));
     }
 
