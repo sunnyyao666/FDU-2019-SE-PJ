@@ -33,23 +33,25 @@ public class Lab2Application {
             @Override
             public void run(String... args) throws Exception {
                 // Create an admin if not exists.
+                String[] region = {"Asia", "China"};
                 if (userRepository.findByUsername("admin") == null) {
                     User admin = new User(
                             "admin",
                             passwordEncoder.encode("password"),
                             "Yao Hongtao",
                             "18302010017@fudan.edu.cn",
-                            "Fudan University"
+                            "Fudan University",
+                            region
                     );
                     Authority adminAuthority = new Authority("Admin", admin, null);
                     userRepository.save(admin);
                     authorityRepository.save(adminAuthority);
                 }
-                userRepository.save(new User("11111", passwordEncoder.encode("123456"), "Zhang Yi", "1@163.com", "1"));
-                userRepository.save(new User("22222", passwordEncoder.encode("123456"), "Zhang Er", "2@163.com", "2"));
-                userRepository.save(new User("33333", passwordEncoder.encode("123456"), "Zhang San", "3@163.com", "3"));
-                userRepository.save(new User("44444", passwordEncoder.encode("123456"), "Zhang Si", "4@163.com", "4"));
-                userRepository.save(new User("55555", passwordEncoder.encode("123456"), "Zhang Wu", "5@163.com", "5"));
+                userRepository.save(new User("11111", passwordEncoder.encode("123456"), "Zhang Yi", "1@163.com", "1", region));
+                userRepository.save(new User("22222", passwordEncoder.encode("123456"), "Zhang Er", "2@163.com", "2", region));
+                userRepository.save(new User("33333", passwordEncoder.encode("123456"), "Zhang San", "3@163.com", "3", region));
+                userRepository.save(new User("44444", passwordEncoder.encode("123456"), "Zhang Si", "4@163.com", "4", region));
+                userRepository.save(new User("55555", passwordEncoder.encode("123456"), "Zhang Wu", "5@163.com", "5", region));
                 conferenceRepository.save(new Conference("12", "12345", "1", new Date(2020, 4, 7), new Date(2020, 4, 7), new Date(2020, 5, 7), new Date(2020, 5, 10), userRepository.findByUsername("11111")));
                 Conference conference = new Conference("24", "23456", "1", new Date(2020, 4, 7), new Date(2020, 4, 7), new Date(2020, 5, 7), new Date(2020, 5, 10), userRepository.findByUsername("11111"));
                 conference.setApplying(false);

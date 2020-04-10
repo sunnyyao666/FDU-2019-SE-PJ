@@ -25,6 +25,7 @@ public class User implements UserDetails {
     private String fullName;
     private String email;
     private String office;
+    private String[] region;
 
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Authority> authorities = new HashSet<>();
@@ -38,12 +39,13 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String password, String fullName, String email, String office) {
+    public User(String username, String password, String fullName, String email, String office, String[] region) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
         this.email = email;
         this.office = office;
+        this.region = region;
     }
 
     @Override
@@ -123,6 +125,14 @@ public class User implements UserDetails {
 
     public void setOffice(String office) {
         this.office = office;
+    }
+
+    public String[] getRegion() {
+        return region;
+    }
+
+    public void setRegion(String[] region) {
+        this.region = region;
     }
 
     public Collection<?> getConferences() {

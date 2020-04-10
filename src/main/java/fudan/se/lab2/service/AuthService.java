@@ -10,9 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @author YHT
  */
@@ -31,7 +28,7 @@ public class AuthService {
         String username = request.getUsername();
         User user = userRepository.findByUsername(username);
         if (user != null) throw new UsernameHasBeenRegisteredException(username);
-        user = new User(username, encoder.encode(request.getPassword()), request.getFullName(), request.getEmail(), request.getOffice());
+        user = new User(username, encoder.encode(request.getPassword()), request.getFullName(), request.getEmail(), request.getOffice(), request.getRegion());
         userRepository.save(user);
         return user;
     }

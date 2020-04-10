@@ -1,7 +1,5 @@
 package fudan.se.lab2.controller.request;
 
-import java.util.Set;
-
 /**
  * @author YHT
  */
@@ -11,18 +9,9 @@ public class RegisterRequest {
     private String fullName;
     private String email;
     private String office;
-    private Set<String> authorities;
+    private String[] region;
 
     public RegisterRequest() {
-    }
-
-    public RegisterRequest(String username, String password, String fullName, String email, String office, Set<String> authorities) {
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.email = email;
-        this.office = office;
-        this.authorities = authorities;
     }
 
     public void setUsername(String username) {
@@ -65,12 +54,12 @@ public class RegisterRequest {
         return office;
     }
 
-    public void setAuthorities(Set<String> authorities) {
-        this.authorities = authorities;
+    public void setRegion(String[] region) {
+        this.region = region;
     }
 
-    public Set<String> getAuthorities() {
-        return authorities;
+    public String[] getRegion() {
+        return region;
     }
 }
 
