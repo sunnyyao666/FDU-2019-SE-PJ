@@ -72,15 +72,32 @@ public class ConferenceService {
         return true;
     }
 
-    public Map<Authority, Conference> listAuthorities() throws BadCredentialsException {
+    private class ConferenceAuthorities {
+        private Conference conference;
+        private Set<Authority> authorities;
+
+        private ConferenceAuthorities(Conference conference, Set<Authority> authorities) {
+            this.conference = conference;
+            this.authorities = authorities;
+        }
+    }
+
+    public Set<ConferenceAuthorities> listAuthorities() throws BadCredentialsException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        Map<Authority, Conference> result = new HashMap<>();
+        Set<ConferenceAuthorities> result = new HashSet<ConferenceAuthorities>();
         Set<Authority> authorities = user.getAuthorities();
-        for (Authority authority : authorities)
-            if (authority.getAuthority().equals("Chair") || authority.getAuthority().equals("PC Member") || authority.getAuthority().equals("Author"))
-                result.put(authority, conferenceRepository.findByFullName(authority.getConferenceFullName()));
+        Set<String> conferenceFullNames = new HashSet<String>();
+        for (Authority authority : authorities) conferenceFullNames.add(authority.getConferenceFullName());
+        for (String conferenceFullName : conferenceFullNames) {
+            authorities = authorityRepository.findAllByUserAndConferenceFullName(user, conferenceFullName);
+            for (Authority authority : authorities)
+                if (!(authority.getAuthority().equals("Chair") || authority.getAuthority().equals("PC Member") || authority.getAuthority().equals("Author")))
+                    authorities.remove(authority);
+            if (!authorities.isEmpty())
+                result.add(new ConferenceAuthorities(conferenceRepository.findByFullName(conferenceFullName), authorities));
+        }
         return result;
     }
 
