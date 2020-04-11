@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.ws.Response;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,9 +73,10 @@ public class ConferenceController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<?> submitThesis(@RequestBody SubmitThesisRequest request) {
+    public ResponseEntity<?> submitThesis(String conferenceFullName, String title, String summary, @RequestParam("file") MultipartFile file) {
         try {
-            return ResponseEntity.ok(conferenceService.submitThesis(request.getConferenceFullName(), request.getTitle(), request.getSummary(), request.getFile()));
+            //return ResponseEntity.ok(conferenceService.submitThesis(request.getConferenceFullName(), request.getTitle(), request.getSummary(), request.getFile()));
+            return ResponseEntity.ok(conferenceService.submitThesis(conferenceFullName, title, summary, file));
         } catch (IOException ex) {
             Map<String, String> response = new HashMap<>();
             response.put("message", ex.getMessage());
