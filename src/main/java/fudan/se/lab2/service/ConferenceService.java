@@ -72,35 +72,6 @@ public class ConferenceService {
         return true;
     }
 
-    private class ConferenceAuthorities {
-        private Conference conference;
-        private Set<Authority> authorities;
-
-        private ConferenceAuthorities(Conference conference, Set<Authority> authorities) {
-            this.conference = conference;
-            this.authorities = authorities;
-        }
-    }
-
-    public Set<ConferenceAuthorities> listAuthorities() throws BadCredentialsException {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
-        User user = userRepository.findByUsername(userDetails.getUsername());
-        Set<ConferenceAuthorities> result = new HashSet<ConferenceAuthorities>();
-        Set<Authority> authorities = user.getAuthorities();
-        Set<String> conferenceFullNames = new HashSet<String>();
-        for (Authority authority : authorities) conferenceFullNames.add(authority.getConferenceFullName());
-        for (String conferenceFullName : conferenceFullNames) {
-            authorities = authorityRepository.findAllByUserAndConferenceFullName(user, conferenceFullName);
-            for (Authority authority : authorities)
-                if (!(authority.getAuthority().equals("Chair") || authority.getAuthority().equals("PC Member") || authority.getAuthority().equals("Author")))
-                    authorities.remove(authority);
-            if (!authorities.isEmpty())
-                result.add(new ConferenceAuthorities(conferenceRepository.findByFullName(conferenceFullName), authorities));
-        }
-        return result;
-    }
-
     public Conference searchConference(String conferenceFullName) {
         return conferenceRepository.findByFullName(conferenceFullName);
     }

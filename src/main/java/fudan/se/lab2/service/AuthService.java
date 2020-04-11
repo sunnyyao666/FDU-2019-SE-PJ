@@ -6,6 +6,8 @@ import fudan.se.lab2.repository.UserRepository;
 import fudan.se.lab2.controller.request.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,12 @@ public class AuthService {
         if (!encoder.matches(password, user.getPassword()))
             throw new BadCredentialsException("User: '" + username + "' got wrong password.");
         return user;
+    }
+
+    public User updateUser() throws BadCredentialsException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
+        return userRepository.findByUsername(userDetails.getUsername());
     }
 
 }

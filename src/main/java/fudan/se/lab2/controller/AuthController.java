@@ -34,4 +34,9 @@ public class AuthController {
         builder.header("token", jwtTokenUtil.generateToken(user));
         return builder.body(user);
     }
+
+    @PostMapping("/updateUser")
+    public ResponseEntity<?> updateUser(@RequestBody SearchRequest request) {
+        return ResponseEntity.ok(authService.updateUser());
+    }
 }

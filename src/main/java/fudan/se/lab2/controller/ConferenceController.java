@@ -38,11 +38,6 @@ public class ConferenceController {
         return ResponseEntity.ok(conferenceService.auditConferenceApplication(request.getConferenceFullName(), request.isPassed()));
     }
 
-    @PostMapping("/listAuthorities")
-    public ResponseEntity<?> listAuthorities(@RequestBody SearchRequest request) {
-        return ResponseEntity.ok(conferenceService.listAuthorities());
-    }
-
     @PostMapping("/searchConference")
     public ResponseEntity<?> searchConference(@RequestBody SearchRequest request) {
         return ResponseEntity.ok(conferenceService.searchConference(request.getConferenceFullName()));
