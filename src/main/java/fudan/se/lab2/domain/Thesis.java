@@ -22,7 +22,11 @@ public class Thesis implements Serializable {
     private User author;
 
     private String conferenceFullName;
+
+    @Lob
+    @Column(columnDefinition = "text")
     private String summary;
+
     private String path;
 
     public Thesis() {

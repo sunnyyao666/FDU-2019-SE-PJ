@@ -43,7 +43,7 @@ public class Lab2Application {
                             "Fudan University",
                             region
                     );
-                    Authority adminAuthority = new Authority("Admin", admin, null);
+                    Authority adminAuthority = new Authority("Admin", admin, null, null);
                     userRepository.save(admin);
                     authorityRepository.save(adminAuthority);
                 }

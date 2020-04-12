@@ -20,9 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -66,7 +64,7 @@ public class ConferenceService {
         if (passed) {
             User creator = conference.getCreator();
             conference.setValid(true);
-            authorityRepository.save(new Authority("Chair", creator, conference.getFullName()));
+            authorityRepository.save(new Authority("Chair", creator, conference.getFullName(), null));
         }
         conferenceRepository.save(conference);
         return true;
@@ -87,9 +85,12 @@ public class ConferenceService {
         return resultUsers;
     }
 
-    public boolean invitePCMember(String username, String conferenceFullName) {
+    public boolean invitePCMember(String username, String conferenceFullName) throws BadCredentialsException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
+        User inviter = userRepository.findByUsername(userDetails.getUsername());
         User user = userRepository.findByUsername(username);
-        authorityRepository.save(new Authority("Undetermined PC Member", user, conferenceFullName));
+        authorityRepository.save(new Authority("Undetermined PC Member", user, conferenceFullName, inviter.getUsername()));
         return true;
     }
 
@@ -117,23 +118,30 @@ public class ConferenceService {
         return true;
     }
 
-    public Thesis submitThesis(String conferenceFullName, String title, String summary, MultipartFile file) throws BadCredentialsException, IOException {
+    public Thesis submitThesis(String conferenceFullName, String title, String summary, MultipartFile file) throws BadCredentialsException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        File target = new File(ResourceUtils.getURL("classpath:").getPath(), "static/" + conferenceFullName + "/" + user.getUsername() + "/");
-        if (!target.exists()) target.mkdirs();
-        StringBuilder path = new StringBuilder(target.getAbsolutePath() + title);
-        while (new File(path + ".pdf").exists()) path.append("(1)");
-        String thesisPath = path + ".pdf";
-        FileOutputStream out = new FileOutputStream(thesisPath);
-        out.write(file.getBytes());
-        out.flush();
-        out.close();
+        String thesisPath;
+        try {
+            File target = new File(ResourceUtils.getURL("classpath:").getPath(), "static/" + conferenceFullName + "/" + user.getUsername() + "/");
+            if (!target.exists()) target.mkdirs();
+            StringBuilder path = new StringBuilder(target.getAbsolutePath() + title);
+            while (new File(path + ".pdf").exists()) path.append("(1)");
+            thesisPath = path + ".pdf";
+        } catch (IOException ex) {
+            throw new BadCredentialsException("Bad uploading!");
+        }
+        try (FileOutputStream out = new FileOutputStream(thesisPath)) {
+            out.write(file.getBytes());
+            out.flush();
+        } catch (IOException ex) {
+            throw new BadCredentialsException("Bad uploading!");
+        }
         Thesis thesis = new Thesis(title, user, conferenceFullName, summary, thesisPath);
         thesisRepository.save(thesis);
         if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName).isEmpty())
-            authorityRepository.save(new Authority("Author", user, conferenceFullName));
+            authorityRepository.save(new Authority("Author", user, conferenceFullName, null));
         return thesis;
     }
 }
