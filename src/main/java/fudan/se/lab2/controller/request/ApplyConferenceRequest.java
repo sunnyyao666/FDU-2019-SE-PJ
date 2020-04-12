@@ -27,8 +27,7 @@ public class ApplyConferenceRequest {
     public ApplyConferenceRequest() {
     }
 
-    public ApplyConferenceRequest(String fullName, String abbreviation, String place, Date startDate, Date endDate, Date deadline, Date releaseTime)
-    {
+    public ApplyConferenceRequest(String fullName, String abbreviation, String place, Date startDate, Date endDate, Date deadline, Date releaseTime) {
         this.fullName = fullName;
         this.abbreviation = abbreviation;
         this.place = place;

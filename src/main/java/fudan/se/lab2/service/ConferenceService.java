@@ -129,6 +129,7 @@ public class ConferenceService {
             StringBuilder path = new StringBuilder(target.getAbsolutePath() + title);
             while (new File(path + ".pdf").exists()) path.append("(1)");
             thesisPath = path + ".pdf";
+            System.out.println(target.getAbsolutePath());
         } catch (IOException ex) {
             throw new BadCredentialsException("Bad uploading!");
         }

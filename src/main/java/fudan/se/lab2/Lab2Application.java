@@ -57,6 +57,7 @@ public class Lab2Application {
                 conference.setApplying(false);
                 conference.setValid(true);
                 conferenceRepository.save(conference);
+                authorityRepository.save(new Authority("Chair", userRepository.findByUsername("11111"), "23456", null));
             }
         };
     }

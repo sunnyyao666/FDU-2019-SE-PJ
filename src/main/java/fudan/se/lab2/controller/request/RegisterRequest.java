@@ -5,17 +5,6 @@ package fudan.se.lab2.controller.request;
  */
 public class RegisterRequest {
     private String username;
-
-    public RegisterRequest(String username, String password, String fullName, String email, String office, String[] region)
-    {
-        this.username = username;
-        this.password = password;
-        this.fullName = fullName;
-        this.email = email;
-        this.office = office;
-        this.region = region;
-    }
-
     private String password;
     private String fullName;
     private String email;
@@ -23,6 +12,15 @@ public class RegisterRequest {
     private String[] region;
 
     public RegisterRequest() {
+    }
+
+    public RegisterRequest(String username, String password, String fullName, String email, String office, String[] region) {
+        this.username = username;
+        this.password = password;
+        this.fullName = fullName;
+        this.email = email;
+        this.office = office;
+        this.region = region;
     }
 
     public void setUsername(String username) {
