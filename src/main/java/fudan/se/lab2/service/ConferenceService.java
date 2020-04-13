@@ -14,7 +14,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -122,17 +121,11 @@ public class ConferenceService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        String thesisPath;
-        try {
-            File target = new File(ResourceUtils.getURL("classpath:").getPath(), "static/" + conferenceFullName + "/" + user.getUsername() + "/");
-            if (!target.exists()) target.mkdirs();
-            StringBuilder path = new StringBuilder(target.getAbsolutePath() + title);
-            while (new File(path + ".pdf").exists()) path.append("(1)");
-            thesisPath = path + ".pdf";
-            System.out.println(target.getAbsolutePath());
-        } catch (IOException ex) {
-            throw new BadCredentialsException("Bad uploading!");
-        }
+        File target = new File(System.getProperty("user.dir"), "/static/" + conferenceFullName + "/" + user.getUsername() + "/");
+        if (!target.exists()) target.mkdirs();
+        StringBuilder path = new StringBuilder(target.getAbsolutePath() + "/" + title);
+        while (new File(path + ".pdf").exists()) path.append("(1)");
+        String thesisPath = path + ".pdf";
         try (FileOutputStream out = new FileOutputStream(thesisPath)) {
             out.write(file.getBytes());
             out.flush();

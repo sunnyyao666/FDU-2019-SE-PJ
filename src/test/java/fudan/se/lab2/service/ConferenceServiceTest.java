@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class ConferenceServiceTest {
@@ -226,11 +227,7 @@ class ConferenceServiceTest {
         User user = new User("testUser", encoder.encode("111111a"), "fullName", "testEmail@t.com", "off", new String[0]);
         userRepository.save(user);
         fakeLogin("testUser");
-
-
-        byte[] bytes = new byte[1024 * 1024];
         File file = new File("src/test/java/fudan/se/lab2/service/test.pdf");
-
         MultipartFile testFile = null;
         try {
             testFile = new MockMultipartFile("test.pdf", "test.pdf", "pdf", new FileInputStream(file));
