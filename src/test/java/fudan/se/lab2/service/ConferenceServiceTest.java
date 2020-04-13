@@ -236,7 +236,7 @@ class ConferenceServiceTest {
             e.printStackTrace();
         }
         MultipartFile finalTestFile = testFile;
-        assertThrows(BadCredentialsException.class,() -> conferenceService.submitThesis("fullName", "title", "summary", finalTestFile) );
+        assertDoesNotThrow(() -> conferenceService.submitThesis("fullName", "title", "summary", finalTestFile) );
     }
 
     private void fakeLogin() {
