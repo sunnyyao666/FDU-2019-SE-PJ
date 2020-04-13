@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -238,7 +239,7 @@ class ConferenceServiceTest {
             e.printStackTrace();
         }
         MultipartFile finalTestFile = testFile;
-        assertDoesNotThrow(() -> conferenceService.submitThesis("fullName", "title", "summary", finalTestFile));
+        assertThrows(BadCredentialsException.class,() -> conferenceService.submitThesis("fullName", "title", "summary", finalTestFile) );
     }
 
     private void fakeLogin() {
