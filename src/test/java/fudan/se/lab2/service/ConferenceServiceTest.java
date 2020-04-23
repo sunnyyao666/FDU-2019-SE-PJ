@@ -97,7 +97,6 @@ class ConferenceServiceTest {
         assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("nameThatNoExist", true));
     }
 
-
     @Test
     @Transactional
     void searchConference() {
@@ -112,7 +111,6 @@ class ConferenceServiceTest {
         conferenceRepository.save(testConference);
         assertNotNull(conferenceService.searchConference("testConferenceFullName"));
     }
-
 
     private void fakeLogin() {
         fakeLogin("testUsername");
