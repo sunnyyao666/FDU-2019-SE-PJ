@@ -8,7 +8,6 @@ public class SearchRequest {
     private String conferenceFullName;
 
     public SearchRequest(){
-
     }
 
     public String getText() {

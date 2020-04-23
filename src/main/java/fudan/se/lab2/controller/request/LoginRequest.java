@@ -9,7 +9,6 @@ public class LoginRequest {
 
     public LoginRequest() {}
 
-
     public String getUsername() {
         return username;
     }

@@ -2,6 +2,9 @@ package fudan.se.lab2.controller.request;
 
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * @author YHT
+ */
 public class SubmitThesisRequest {
     private String conferenceFullName;
     private String title;

@@ -10,6 +10,7 @@ import fudan.se.lab2.repository.AuthorityRepository;
 import fudan.se.lab2.repository.ConferenceRepository;
 import fudan.se.lab2.repository.ThesisRepository;
 import fudan.se.lab2.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,13 +31,12 @@ public class ConferenceService {
     private UserRepository userRepository;
     private AuthorityRepository authorityRepository;
     private ConferenceRepository conferenceRepository;
-    private ThesisRepository thesisRepository;
 
-    public ConferenceService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, ThesisRepository thesisRepository) {
+    @Autowired
+    public ConferenceService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.conferenceRepository = conferenceRepository;
-        this.thesisRepository = thesisRepository;
     }
 
     public Conference applyConference(ApplyConferenceRequest request) throws BadCredentialsException, ConferenceNameDuplicatedException {
@@ -73,69 +73,11 @@ public class ConferenceService {
         return conferenceRepository.findByFullName(conferenceFullName);
     }
 
-    public Set<User> searchUsers(String text, String conferenceFullName) {
-        Set<User> users = userRepository.findAllByFullNameContaining(text);
-        Set<User> resultUsers = new HashSet<User>();
-        for (User user : users)
-            if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("PC Member", user, conferenceFullName).isEmpty()
-                    && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Chair", user, conferenceFullName).isEmpty()
-                    && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Admin", user, null).isEmpty())
-                resultUsers.add(user);
-        return resultUsers;
-    }
-
-    public boolean invitePCMember(String username, String conferenceFullName) throws BadCredentialsException {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
-        User inviter = userRepository.findByUsername(userDetails.getUsername());
-        User user = userRepository.findByUsername(username);
-        authorityRepository.save(new Authority("Undetermined PC Member", user, conferenceFullName, inviter.getUsername()));
-        return true;
-    }
-
-    public Set<Authority> listInviteHistory(String conferenceFullName) {
-        return authorityRepository.findAllByAuthorityContainingAndConferenceFullName("PC Member", conferenceFullName);
-    }
-
-    public boolean auditPCInvitationApplication(String conferenceFullName, boolean passed) throws BadCredentialsException {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
-        User user = userRepository.findByUsername(userDetails.getUsername());
-        Set<Authority> authorities = authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Undetermined PC Member", user, conferenceFullName);
-        if (authorities == null) throw new BadCredentialsException("Bad operation.");
-        Authority authority = authorities.iterator().next();
-        if (passed) authority.setAuthority("PC Member");
-        else authority.setAuthority("Denied PC Member");
-        authorityRepository.save(authority);
-        return true;
-    }
 
     public boolean changeSubmissionState(String conferenceFullName, boolean passed) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         conference.setSubmitting(passed);
         conferenceRepository.save(conference);
         return true;
-    }
-
-    public Thesis submitThesis(String conferenceFullName, String title, String summary, MultipartFile file) throws BadCredentialsException {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
-        User user = userRepository.findByUsername(userDetails.getUsername());
-        File target = new File(System.getProperty("user.dir"), "/static/" + conferenceFullName + "/" + user.getUsername() + "/");
-        if (!target.exists()) target.mkdirs();
-        StringBuilder path = new StringBuilder(target.getAbsolutePath() + "/" + title);
-        while (new File(path + ".pdf").exists()) path.append("(1)");
-        String thesisPath = path + ".pdf";
-        try (FileOutputStream out = new FileOutputStream(thesisPath)) {
-            out.write(file.getBytes());
-            out.flush();
-        } catch (IOException ex) {
-            throw new BadCredentialsException("Bad uploading!");
-        }
-        Thesis thesis = new Thesis(title, user, conferenceFullName, summary, thesisPath);
-        thesisRepository.save(thesis);
-        if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName).isEmpty())
-            authorityRepository.save(new Authority("Author", user, conferenceFullName, null));
-        return thesis;
     }
 }

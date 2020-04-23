@@ -1,5 +1,8 @@
 package fudan.se.lab2.controller.request;
 
+/**
+ * @author YHT
+ */
 public class InvitePCMemberRequest {
     private String[] invitee;
     private String conferenceFullName;
