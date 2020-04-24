@@ -12,7 +12,7 @@ import java.util.Set;
  */
 @Repository
 public interface AuthorityRepository extends CrudRepository<Authority, Long> {
-    Set<Authority> findAllByUserAndConferenceFullName(User user,String conferenceFullName);
+    Set<Authority> findAllByAuthorityAndConferenceFullName(String authority, String conferenceFullName);
 
     Set<Authority> findAllByAuthorityContainingAndConferenceFullName(String authority, String conferenceFullName);
 

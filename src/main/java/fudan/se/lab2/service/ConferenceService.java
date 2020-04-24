@@ -3,24 +3,17 @@ package fudan.se.lab2.service;
 import fudan.se.lab2.controller.request.ApplyConferenceRequest;
 import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.Conference;
-import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.exception.ConferenceNameDuplicatedException;
 import fudan.se.lab2.repository.AuthorityRepository;
 import fudan.se.lab2.repository.ConferenceRepository;
-import fudan.se.lab2.repository.ThesisRepository;
 import fudan.se.lab2.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -45,7 +38,7 @@ public class ConferenceService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         Conference conference = conferenceRepository.findByFullName(request.getFullName());
         if (conference != null) throw new ConferenceNameDuplicatedException(request.getFullName());
-        conference = new Conference(request.getAbbreviation(), fullName, request.getPlace(), request.getStartDate(), request.getEndDate(), request.getDeadline(), request.getReleaseTime(), userRepository.findByUsername(userDetails.getUsername()));
+        conference = new Conference(request.getAbbreviation(), fullName, request.getPlace(), request.getStartDate(), request.getEndDate(), request.getDeadline(), request.getReleaseTime(), request.getTopic(), userRepository.findByUsername(userDetails.getUsername()));
         conferenceRepository.save(conference);
         return conference;
     }
@@ -77,6 +70,16 @@ public class ConferenceService {
     public boolean changeSubmissionState(String conferenceFullName, boolean passed) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         conference.setSubmitting(passed);
+        conferenceRepository.save(conference);
+        return true;
+    }
+
+    public boolean startAudit(String conferenceFullName, boolean passed) {
+        Conference conference = conferenceRepository.findByFullName(conferenceFullName);
+        if (authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size() < 2)
+            return false;
+        conference.setAuditing(true);
+        conference.setSubmitting(false);
         conferenceRepository.save(conference);
         return true;
     }

@@ -40,6 +40,10 @@ public class Thesis implements Serializable {
         this.path = path;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }

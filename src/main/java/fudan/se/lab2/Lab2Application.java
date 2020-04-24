@@ -24,9 +24,6 @@ public class Lab2Application {
         SpringApplication.run(Lab2Application.class, args);
     }
 
-    /**
-     * This is a function to create some basic entities when the application starts.
-     */
     @Bean
     public CommandLineRunner dataLoader(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, PasswordEncoder passwordEncoder) {
         return new CommandLineRunner() {
@@ -52,8 +49,9 @@ public class Lab2Application {
                 userRepository.save(new User("33333", passwordEncoder.encode("123456"), "Zhang San", "3@163.com", "3", region));
                 userRepository.save(new User("44444", passwordEncoder.encode("123456"), "Zhang Si", "4@163.com", "4", region));
                 userRepository.save(new User("55555", passwordEncoder.encode("123456"), "Zhang Wu", "5@163.com", "5", region));
-                conferenceRepository.save(new Conference("12", "12345", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), userRepository.findByUsername("11111")));
-                Conference conference = new Conference("24", "23456", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), userRepository.findByUsername("11111"));
+                String[] topic = {"1"};
+                conferenceRepository.save(new Conference("12", "12345", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), topic, userRepository.findByUsername("11111")));
+                Conference conference = new Conference("24", "23456", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), topic, userRepository.findByUsername("11111"));
                 conference.setApplying(false);
                 conference.setValid(true);
                 conferenceRepository.save(conference);

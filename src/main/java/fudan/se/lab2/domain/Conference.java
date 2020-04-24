@@ -6,6 +6,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author YHT
+ */
 @Entity
 public class Conference implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -22,9 +25,11 @@ public class Conference implements Serializable {
     private Date endDate;
     private Date deadline;
     private Date releaseTime;
+    private String[] topic;
     private boolean applying; //是否在申请
     private boolean valid; //是否通过审核
     private boolean submitting; //是否开放投稿
+    private boolean auditing; //是否开放审稿
 
     @ManyToOne
     @JsonIgnore
@@ -35,7 +40,7 @@ public class Conference implements Serializable {
     public Conference() {
     }
 
-    public Conference(String abbreviation, String fullName, String place, Date startDate, Date endDate, Date deadline, Date releaseTime, User creator) {
+    public Conference(String abbreviation, String fullName, String place, Date startDate, Date endDate, Date deadline, Date releaseTime, String[] topic, User creator) {
         this.abbreviation = abbreviation;
         this.fullName = fullName;
         this.place = place;
@@ -43,11 +48,13 @@ public class Conference implements Serializable {
         this.endDate = endDate;
         this.deadline = deadline;
         this.releaseTime = releaseTime;
+        this.topic = topic;
         this.creator = creator;
         this.creatorName = creator.getUsername();
         this.applying = true;
         this.valid = false;
         this.submitting = false;
+        this.auditing = false;
     }
 
     public String getFullName() {
@@ -127,6 +134,14 @@ public class Conference implements Serializable {
         this.releaseTime = releaseTime;
     }
 
+    public String[] getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String[] topic) {
+        this.topic = topic;
+    }
+
     public boolean isApplying() {
         return applying;
     }
@@ -149,5 +164,13 @@ public class Conference implements Serializable {
 
     public void setSubmitting(boolean submitting) {
         this.submitting = submitting;
+    }
+
+    public boolean isAuditing() {
+        return auditing;
+    }
+
+    public void setAuditing(boolean auditing) {
+        this.auditing = auditing;
     }
 }

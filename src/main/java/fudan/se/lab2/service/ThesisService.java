@@ -4,7 +4,6 @@ import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.AuthorityRepository;
-import fudan.se.lab2.repository.ConferenceRepository;
 import fudan.se.lab2.repository.ThesisRepository;
 import fudan.se.lab2.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

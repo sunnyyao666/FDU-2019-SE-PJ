@@ -25,6 +25,7 @@ public class Authority implements GrantedAuthority {
     private String username;
     private String conferenceFullName;
     private String inviter;
+    private String topic;
 
     public Authority() {
     }
@@ -34,7 +35,8 @@ public class Authority implements GrantedAuthority {
         this.user = user;
         this.username = user.getUsername();
         this.conferenceFullName = conferenceFullName;
-        this.inviter=inviter;
+        this.inviter = inviter;
+        this.topic = null;
     }
 
     @Override
@@ -81,5 +83,13 @@ public class Authority implements GrantedAuthority {
 
     public void setInviter(String inviter) {
         this.inviter = inviter;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 }

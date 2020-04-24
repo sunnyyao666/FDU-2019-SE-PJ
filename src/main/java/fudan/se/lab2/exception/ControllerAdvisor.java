@@ -13,8 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * You can handle all of your exceptions here.
- *
  * @author YHT
  */
 @ControllerAdvice

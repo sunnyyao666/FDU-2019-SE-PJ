@@ -42,10 +42,11 @@ class ThesisServiceTest {
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
+        String[] testTopic = {"1"};
         String password = "111111a";
         User testChair = new User("testChair", encoder.encode(password), "testFullName", "323@d.d", "off", new String[0]);
         userRepository.save(testChair);
-        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testChair);
+        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic, testChair);
         conferenceRepository.save(testConference);
         //添加会议
         User user = new User("testUsername", encoder.encode("111111a"), "testFullName", "testEmail@t.com", "off", new String[0]);

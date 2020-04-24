@@ -43,4 +43,8 @@ public class ConferenceController {
         return ResponseEntity.ok(conferenceService.changeSubmissionState(request.getConferenceFullName(), request.isPassed()));
     }
 
+    @PostMapping("/startAudit")
+    public ResponseEntity<?> startAudit(@RequestBody AuditApplicationRequest request) {
+        return ResponseEntity.ok(conferenceService.startAudit(request.getConferenceFullName(), request.isPassed()));
+    }
 }
