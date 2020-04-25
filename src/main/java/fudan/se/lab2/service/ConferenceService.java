@@ -56,7 +56,12 @@ public class ConferenceService {
         if (passed) {
             User creator = conference.getCreator();
             conference.setValid(true);
-            authorityRepository.save(new Authority("Chair", creator, conference.getFullName(), null));
+            Authority authority = new Authority("Chair", creator, conference.getFullName(), null);
+            StringBuilder finalTopic = new StringBuilder();
+            for (String topic : conference.getTopic()) finalTopic.append(" ").append(topic);
+            authority.setTopic(finalTopic.append(" ").toString());
+            authorityRepository.save(authority);
+
         }
         conferenceRepository.save(conference);
         return true;

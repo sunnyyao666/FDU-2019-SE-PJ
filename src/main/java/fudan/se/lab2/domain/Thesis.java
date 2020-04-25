@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author YHT
@@ -28,6 +30,9 @@ public class Thesis implements Serializable {
     private String summary;
 
     private String path;
+
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "thesis")
+    private Set<PCAudit> pcAudits = new HashSet<>();
 
     public Thesis() {
     }
@@ -82,5 +87,13 @@ public class Thesis implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Set<PCAudit> getPcAudits() {
+        return pcAudits;
+    }
+
+    public void setPcAudits(Set<PCAudit> pcAudits) {
+        this.pcAudits = pcAudits;
     }
 }

@@ -9,7 +9,6 @@ public class SubmitThesisRequest {
     private String conferenceFullName;
     private String title;
     private String summary;
-    private MultipartFile file;
 
     public SubmitThesisRequest(){
     }
@@ -36,13 +35,5 @@ public class SubmitThesisRequest {
 
     public void setSummary(String summary) {
         this.summary = summary;
-    }
-
-    public MultipartFile getFile() {
-        return file;
-    }
-
-    public void setFile(MultipartFile file) {
-        this.file = file;
     }
 }

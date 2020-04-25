@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author YHT
@@ -26,6 +28,9 @@ public class Authority implements GrantedAuthority {
     private String conferenceFullName;
     private String inviter;
     private String topic;
+
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "authority")
+    private Set<PCAudit> pcAudits = new HashSet<>();
 
     public Authority() {
     }
@@ -91,5 +96,13 @@ public class Authority implements GrantedAuthority {
 
     public void setTopic(String topic) {
         this.topic = topic;
+    }
+
+    public Set<PCAudit> getPcAudits() {
+        return pcAudits;
+    }
+
+    public void setPcAudits(Set<PCAudit> pcAudits) {
+        this.pcAudits = pcAudits;
     }
 }
