@@ -19,9 +19,13 @@ public class Thesis implements Serializable {
 
     private String title;
 
+
     @ManyToOne
     @JsonIgnore
-    private User author;
+    private User submitter;
+
+
+    private String authors;
 
     private String conferenceFullName;
 
@@ -37,12 +41,23 @@ public class Thesis implements Serializable {
     public Thesis() {
     }
 
-    public Thesis(String title, User author, String conferenceFullName, String summary, String path) {
+    public Thesis(String title, User submitter, String conferenceFullName, String summary, String path,String authors) {
         this.title = title;
-        this.author = author;
+        this.submitter=submitter;
         this.conferenceFullName = conferenceFullName;
         this.summary = summary;
+        this.authors=authors;
+
         this.path = path;
+    }
+    public User getSubmitter()
+    {
+        return submitter;
+    }
+
+    public String getAuthors()
+    {
+        return authors;
     }
 
     public Long getId() {
@@ -57,13 +72,7 @@ public class Thesis implements Serializable {
         this.title = title;
     }
 
-    public User getAuthor() {
-        return author;
-    }
 
-    public void setAuthor(User author) {
-        this.author = author;
-    }
 
     public String getConferenceFullName() {
         return conferenceFullName;
@@ -95,5 +104,15 @@ public class Thesis implements Serializable {
 
     public void setPcAudits(Set<PCAudit> pcAudits) {
         this.pcAudits = pcAudits;
+    }
+
+    public void setSubmitter(User submitter)
+    {
+        this.submitter = submitter;
+    }
+
+    public void setAuthors(String authors)
+    {
+        this.authors = authors;
     }
 }

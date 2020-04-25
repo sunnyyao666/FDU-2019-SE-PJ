@@ -9,5 +9,5 @@ import java.util.Set;
 
 @Repository
 public interface ThesisRepository extends CrudRepository<Thesis, Long> {
-    Set<Thesis> findAllByAuthorAndConferenceFullName(User author, String conferenceFullName);
+    //Set<Thesis> findAllByAuthorAndConferenceFullName(User submitter, String conferenceFullName);
 }

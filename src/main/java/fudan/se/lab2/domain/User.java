@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "creator")
     private Set<Conference> conferences = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "author")
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "submitter")
     private Set<Thesis> theses = new HashSet<>();
 
     public User() {
@@ -41,6 +41,13 @@ public class User implements UserDetails {
     public User(String username, String password, String fullName, String email, String office, String[] region) {
         this.username = username;
         this.password = password;
+        this.fullName = fullName;
+        this.email = email;
+        this.office = office;
+        this.region = region;
+    }
+    public User(String fullName, String email, String office, String[] region) {
+
         this.fullName = fullName;
         this.email = email;
         this.office = office;

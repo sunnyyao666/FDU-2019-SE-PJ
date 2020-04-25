@@ -4,6 +4,7 @@ import fudan.se.lab2.domain.Conference;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.ConferenceRepository;
 import fudan.se.lab2.repository.UserRepository;
+import net.sf.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,21 @@ class ThesisServiceTest {
     @Autowired
     PasswordEncoder encoder;
 
+
+    @Test
+    void testJSON(){
+        User[] testUsers=new User[2];
+        String password = "111111a";
+        User testChair1 = new User("testChair1", encoder.encode(password), "testFullName1", "323@d.d", "off", new String[0]);
+        User testChair2 = new User("testChair2", encoder.encode(password), "testFullName2", "323@d.d", "off", new String[0]);
+        testUsers[0]=testChair1;
+        testUsers[1]=testChair2;
+        JSONArray jsonarray = JSONArray.fromObject(testUsers);
+        String jsonstr = jsonarray.toString();
+        assertEquals(thesisService.testJSON(jsonstr).toString(),jsonarray.toString());
+    }
+
+
     @Test
     @Transactional
     void submitThesis() {
@@ -60,7 +76,19 @@ class ThesisServiceTest {
             e.printStackTrace();
         }
         MultipartFile finalTestFile = testFile;
-        assertDoesNotThrow(() -> thesisService.submitThesis("testConferenceFullName", "title", "summary", finalTestFile));
+
+
+        User[] testUsers=new User[2];
+        User testChair1 = new User("testChair1", encoder.encode(password), "testFullName1", "323@d.d", "off", new String[0]);
+        User testChair2 = new User("testChair2", encoder.encode(password), "testFullName2", "323@d.d", "off", new String[0]);
+        testUsers[0]=testChair1;
+        testUsers[1]=testChair2;
+        JSONArray jsonarray = JSONArray.fromObject(testUsers);
+        String jsonstr = jsonarray.toString();
+
+
+
+        assertDoesNotThrow(() -> thesisService.submitThesis("testConferenceFullName", "title", "summary", finalTestFile,jsonstr));
     }
 
     private void fakeLogin(String username) {
@@ -71,4 +99,7 @@ class ThesisServiceTest {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
+
+
+
 }
