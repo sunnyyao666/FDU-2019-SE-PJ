@@ -41,32 +41,24 @@ public class ThesisService {
         this.thesisRepository = thesisRepository;
     }
 
-
-    public Object testJSON(String writers){
-        JSONArray json = JSONArray.fromObject(writers);
-        return  json;
-    }
-
-
-    public Object submitThesis(String conferenceFullName, String title, String summary, MultipartFile file,String authorsStr) throws BadCredentialsException {
-        JSONArray jsonWriters = JSONArray.fromObject(authorsStr);
-        Set<User> authors=new HashSet<>();
-        for(int i=0;i<jsonWriters.size();i++) {
-
-            JSONObject jo = JSONObject.fromObject(jsonWriters.get(i));
-
-            String fullName= jsonWriters.getJSONObject(i).get("fullName").toString();
-
-            String email=(String) jsonWriters.getJSONObject(i).get("email").toString();
-            String office=(String) jsonWriters.getJSONObject(i).get("office").toString();
-            Object regionO= jsonWriters.getJSONObject(i).get("region");
-            ObjectMapper objectMapper = new ObjectMapper();
-            String[] region=new String[3];
-            region=objectMapper.convertValue(regionO,region.getClass());
-            User author=new User(fullName,email,office,region);
-
-            authors.add(author);
-        }
+    public Thesis submitThesis(Long id, String conferenceFullName, String title, String summary, String authors, String topics, MultipartFile file) throws BadCredentialsException {
+//        JSONArray jsonWriters = JSONArray.fromObject(authors);
+//        Set<User> authors = new HashSet<>();
+//        for (int i = 0; i < jsonWriters.size(); i++) {
+//
+//            JSONObject jsonObject = jsonWriters.getJSONObject(i);
+//
+//            String fullName = jsonObject.get("fullName").toString();
+//            String email = jsonObject.get("email").toString();
+//            String office = jsonObject.get("office").toString();
+//            Object regionO = jsonObject.get("region");
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            String[] region = new String[3];
+//            region = objectMapper.convertValue(regionO, region.getClass());
+//            User author = new User(fullName, email, office, region);
+//
+//            authors.add(author);
+//        }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
@@ -75,16 +67,35 @@ public class ThesisService {
         StringBuilder path = new StringBuilder(target.getAbsolutePath() + "/" + title);
         while (new File(path + ".pdf").exists()) path.append("(1)");
         String thesisPath = path + ".pdf";
-        try (FileOutputStream out = new FileOutputStream(thesisPath)) {
-            out.write(file.getBytes());
-            out.flush();
-        } catch (IOException ex) {
-            throw new BadCredentialsException("Bad uploading!");
+        if (id == -1) {
+            try (FileOutputStream out = new FileOutputStream(thesisPath)) {
+                out.write(file.getBytes());
+                out.flush();
+            } catch (IOException ex) {
+                throw new BadCredentialsException("Bad uploading!");
+            }
+            Thesis thesis = new Thesis(conferenceFullName, title, summary, user, authors, topics, thesisPath);
+            thesisRepository.save(thesis);
+            if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName).isEmpty())
+                authorityRepository.save(new Authority("Author", user, conferenceFullName, null));
+            return thesis;
+        } else {
+            Thesis thesis = thesisRepository.findById(id).get();
+            thesis.setTitle(title);
+            thesis.setSummary(summary);
+            thesis.setAuthors(authors);
+            thesis.setTopics(topics);
+            if (!file.isEmpty()) {
+                try (FileOutputStream out = new FileOutputStream(thesisPath)) {
+                    out.write(file.getBytes());
+                    out.flush();
+                } catch (IOException ex) {
+                    throw new BadCredentialsException("Bad uploading!");
+                }
+                thesis.setPath(thesisPath);
+            }
+            thesisRepository.save(thesis);
+            return thesis;
         }
-        Thesis thesis = new Thesis(title, user, conferenceFullName, summary, thesisPath,authorsStr);
-        thesisRepository.save(thesis);
-        if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName).isEmpty())
-            authorityRepository.save(new Authority("Author", user, conferenceFullName, null));
-        return thesis;
     }
 }

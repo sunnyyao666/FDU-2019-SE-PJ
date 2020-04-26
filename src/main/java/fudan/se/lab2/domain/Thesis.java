@@ -17,22 +17,18 @@ public class Thesis implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String title;
-
-
-    @ManyToOne
-    @JsonIgnore
-    private User submitter;
-
-
-    private String authors;
-
     private String conferenceFullName;
+    private String title;
 
     @Lob
     @Column(columnDefinition = "text")
     private String summary;
 
+    @ManyToOne
+    @JsonIgnore
+    private User submitter;
+    private String authors;
+    private String topics;
     private String path;
 
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "thesis")
@@ -41,27 +37,26 @@ public class Thesis implements Serializable {
     public Thesis() {
     }
 
-    public Thesis(String title, User submitter, String conferenceFullName, String summary, String path,String authors) {
-        this.title = title;
-        this.submitter=submitter;
+    public Thesis(String conferenceFullName, String title, String summary, User submitter, String authors, String topics, String path) {
         this.conferenceFullName = conferenceFullName;
+        this.title = title;
         this.summary = summary;
-        this.authors=authors;
-
+        this.submitter = submitter;
+        this.authors = authors;
+        this.topics = topics;
         this.path = path;
-    }
-    public User getSubmitter()
-    {
-        return submitter;
-    }
-
-    public String getAuthors()
-    {
-        return authors;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getConferenceFullName() {
+        return conferenceFullName;
+    }
+
+    public void setConferenceFullName(String conferenceFullName) {
+        this.conferenceFullName = conferenceFullName;
     }
 
     public String getTitle() {
@@ -72,22 +67,36 @@ public class Thesis implements Serializable {
         this.title = title;
     }
 
-
-
-    public String getConferenceFullName() {
-        return conferenceFullName;
-    }
-
-    public void setConferenceFullName(String conferenceFullName) {
-        this.conferenceFullName = conferenceFullName;
-    }
-
     public String getSummary() {
         return summary;
     }
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public User getSubmitter() {
+        return submitter;
+    }
+
+    public void setSubmitter(User submitter) {
+        this.submitter = submitter;
+    }
+
+    public String getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(String authors) {
+        this.authors = authors;
+    }
+
+    public void setTopics(String topics) {
+        this.topics = topics;
+    }
+
+    public String getTopics() {
+        return topics;
     }
 
     public String getPath() {
@@ -104,15 +113,5 @@ public class Thesis implements Serializable {
 
     public void setPcAudits(Set<PCAudit> pcAudits) {
         this.pcAudits = pcAudits;
-    }
-
-    public void setSubmitter(User submitter)
-    {
-        this.submitter = submitter;
-    }
-
-    public void setAuthors(String authors)
-    {
-        this.authors = authors;
     }
 }

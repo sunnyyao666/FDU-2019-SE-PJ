@@ -27,7 +27,7 @@ public class Authority implements GrantedAuthority {
     private String username;
     private String conferenceFullName;
     private String inviter;
-    private String topic;
+    private String topics;
 
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "authority")
     private Set<PCAudit> pcAudits = new HashSet<>();
@@ -41,7 +41,7 @@ public class Authority implements GrantedAuthority {
         this.username = user.getUsername();
         this.conferenceFullName = conferenceFullName;
         this.inviter = inviter;
-        this.topic = null;
+        this.topics = null;
     }
 
     @Override
@@ -90,12 +90,12 @@ public class Authority implements GrantedAuthority {
         this.inviter = inviter;
     }
 
-    public String getTopic() {
-        return topic;
+    public String getTopics() {
+        return topics;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
+    public void setTopics(String topics) {
+        this.topics = topics;
     }
 
     public Set<PCAudit> getPcAudits() {

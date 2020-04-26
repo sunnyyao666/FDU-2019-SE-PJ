@@ -80,19 +80,17 @@ public class AuthService {
         return authorityRepository.findAllByAuthorityContainingAndConferenceFullName("PC Member", conferenceFullName);
     }
 
-    public boolean auditPCInvitationApplication(String conferenceFullName, String[] topics) throws BadCredentialsException {
+    public boolean auditPCInvitationApplication(String conferenceFullName, String topics) throws BadCredentialsException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
         Set<Authority> authorities = authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Undetermined PC Member", user, conferenceFullName);
         if (authorities == null) throw new BadCredentialsException("Bad operation.");
         Authority authority = authorities.iterator().next();
-        if (topics.length == 0) authority.setAuthority("Denied PC Member");
+        if (topics.equals("false")) authority.setAuthority("Denied PC Member");
         else {
             authority.setAuthority("PC Member");
-            StringBuilder finalTopic = new StringBuilder();
-            for (String topic : topics) finalTopic.append(" ").append(topic);
-            authority.setTopic(finalTopic.append(" ").toString());
+            authority.setTopics(topics);
         }
         authorityRepository.save(authority);
         return true;

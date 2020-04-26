@@ -19,8 +19,8 @@ public class ThesisController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<?> submitThesis(String conferenceFullName, String title, String summary, @RequestParam("file") MultipartFile file,String authorsStr) {
-        return ResponseEntity.ok(thesisService.submitThesis(conferenceFullName, title, summary, file,authorsStr));
+    public ResponseEntity<?> submitThesis(Long id, String conferenceFullName, String title, String summary, String authors, String topics, @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(thesisService.submitThesis(id, conferenceFullName, title, summary, authors, topics, file));
     }
 
 }

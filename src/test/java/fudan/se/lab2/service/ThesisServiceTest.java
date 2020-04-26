@@ -36,21 +36,6 @@ class ThesisServiceTest {
     @Autowired
     PasswordEncoder encoder;
 
-
-    @Test
-    void testJSON(){
-        User[] testUsers=new User[2];
-        String password = "111111a";
-        User testChair1 = new User("testChair1", encoder.encode(password), "testFullName1", "323@d.d", "off", new String[0]);
-        User testChair2 = new User("testChair2", encoder.encode(password), "testFullName2", "323@d.d", "off", new String[0]);
-        testUsers[0]=testChair1;
-        testUsers[1]=testChair2;
-        JSONArray jsonarray = JSONArray.fromObject(testUsers);
-        String jsonstr = jsonarray.toString();
-        assertEquals(thesisService.testJSON(jsonstr).toString(),jsonarray.toString());
-    }
-
-
     @Test
     @Transactional
     void submitThesis() {
@@ -77,18 +62,13 @@ class ThesisServiceTest {
         }
         MultipartFile finalTestFile = testFile;
 
-
-        User[] testUsers=new User[2];
-        User testChair1 = new User("testChair1", encoder.encode(password), "testFullName1", "323@d.d", "off", new String[0]);
-        User testChair2 = new User("testChair2", encoder.encode(password), "testFullName2", "323@d.d", "off", new String[0]);
-        testUsers[0]=testChair1;
-        testUsers[1]=testChair2;
+        User[] testUsers = new User[2];
+        testUsers[0] = new User("testFullName1", "323@d.d", "off", new String[0]);
+        testUsers[1] = new User("testFullName2", "323@d.d", "off", new String[0]);
         JSONArray jsonarray = JSONArray.fromObject(testUsers);
-        String jsonstr = jsonarray.toString();
+        String authors = jsonarray.toString();
 
-
-
-        assertDoesNotThrow(() -> thesisService.submitThesis("testConferenceFullName", "title", "summary", finalTestFile,jsonstr));
+        assertDoesNotThrow(() -> thesisService.submitThesis("testConferenceFullName", "title", "summary", authors, finalTestFile));
     }
 
     private void fakeLogin(String username) {
@@ -99,7 +79,5 @@ class ThesisServiceTest {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
-
-
 
 }

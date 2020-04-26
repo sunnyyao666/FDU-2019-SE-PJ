@@ -46,8 +46,8 @@ public class User implements UserDetails {
         this.office = office;
         this.region = region;
     }
-    public User(String fullName, String email, String office, String[] region) {
 
+    public User(String fullName, String email, String office, String[] region) {
         this.fullName = fullName;
         this.email = email;
         this.office = office;

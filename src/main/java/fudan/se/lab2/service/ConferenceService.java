@@ -59,7 +59,7 @@ public class ConferenceService {
             Authority authority = new Authority("Chair", creator, conference.getFullName(), null);
             StringBuilder finalTopic = new StringBuilder();
             for (String topic : conference.getTopic()) finalTopic.append(" ").append(topic);
-            authority.setTopic(finalTopic.append(" ").toString());
+            authority.setTopics(finalTopic.append(" ").toString());
             authorityRepository.save(authority);
 
         }
