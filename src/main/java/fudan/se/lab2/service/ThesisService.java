@@ -1,15 +1,12 @@
 package fudan.se.lab2.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fudan.se.lab2.domain.Authority;
-import fudan.se.lab2.domain.Thesis;
-import fudan.se.lab2.domain.User;
-import fudan.se.lab2.repository.AuthorityRepository;
-import fudan.se.lab2.repository.ThesisRepository;
-import fudan.se.lab2.repository.UserRepository;
+import fudan.se.lab2.controller.request.AuditThesisRequest;
+import fudan.se.lab2.domain.*;
+import fudan.se.lab2.repository.*;
 import net.sf.json.JSONArray;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,10 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author YHT
@@ -32,33 +26,20 @@ import java.util.Set;
 public class ThesisService {
     private UserRepository userRepository;
     private AuthorityRepository authorityRepository;
+    private ConferenceRepository conferenceRepository;
     private ThesisRepository thesisRepository;
+    private PCAuditRepository pcAuditRepository;
 
     @Autowired
-    public ThesisService(UserRepository userRepository, AuthorityRepository authorityRepository, ThesisRepository thesisRepository) {
+    public ThesisService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, ThesisRepository thesisRepository, PCAuditRepository pcAuditRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
+        this.conferenceRepository = conferenceRepository;
         this.thesisRepository = thesisRepository;
+        this.pcAuditRepository = pcAuditRepository;
     }
 
     public Thesis submitThesis(Long id, String conferenceFullName, String title, String summary, String authors, String topics, MultipartFile file) throws BadCredentialsException {
-//        JSONArray jsonWriters = JSONArray.fromObject(authors);
-//        Set<User> authors = new HashSet<>();
-//        for (int i = 0; i < jsonWriters.size(); i++) {
-//
-//            JSONObject jsonObject = jsonWriters.getJSONObject(i);
-//
-//            String fullName = jsonObject.get("fullName").toString();
-//            String email = jsonObject.get("email").toString();
-//            String office = jsonObject.get("office").toString();
-//            Object regionO = jsonObject.get("region");
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            String[] region = new String[3];
-//            region = objectMapper.convertValue(regionO, region.getClass());
-//            User author = new User(fullName, email, office, region);
-//
-//            authors.add(author);
-//        }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
@@ -97,5 +78,90 @@ public class ThesisService {
             thesisRepository.save(thesis);
             return thesis;
         }
+    }
+
+    public boolean startAudit(String conferenceFullName, boolean passed) {
+        Conference conference = conferenceRepository.findByFullName(conferenceFullName);
+        if (authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size() < 2)
+            return false;
+        if (passed) {
+
+        } else {
+            Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
+            List<Authority> pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
+            pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
+            Collections.sort(pcMembers);
+            for (Thesis thesis : theses) {
+                //List<String> topics = (List<String>) JSONArray.toList(JSONArray.fromObject(thesis.getTopics()), String.class, new JsonConfig());
+                JSONArray jsonAuthors = JSONArray.fromObject(thesis.getAuthors());
+                Map<String, String> authors = new HashMap<>();
+                for (int i = 0; i < jsonAuthors.size(); i++) {
+                    JSONObject jsonObject = jsonAuthors.getJSONObject(i);
+                    authors.put(jsonObject.get("fullName").toString(), jsonObject.get("email").toString());
+                }
+                int n = 0;
+                for (Authority pcMember : pcMembers) {
+                    User user = pcMember.getUser();
+                    boolean isAuthor = false;
+                    for (Map.Entry<String, String> entry : authors.entrySet())
+                        if ((user.getFullName().equals(entry.getKey())) && (user.getEmail().equals(entry.getValue()))) {
+                            isAuthor = true;
+                            break;
+                        }
+                    if (isAuthor) continue;
+                    PCAudit pcAudit = new PCAudit(pcMember, thesis);
+                    pcAuditRepository.save(pcAudit);
+                    Set<PCAudit> newPCAudit = pcMember.getPCAudits();
+                    newPCAudit.add(pcAudit);
+                    pcMember.setPCAudits(newPCAudit);
+                    n++;
+                    if (n == 3) break;
+                }
+                if (n == 3) Collections.sort(pcMembers);
+                else {
+                    pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
+                    return false;
+                }
+            }
+        }
+        conference.setAuditing(true);
+        conference.setSubmitting(false);
+        conferenceRepository.save(conference);
+        return true;
+    }
+
+    public Set<Thesis> pcGetTheses(String conferenceFullName) throws BadCredentialsException {
+        Set<Thesis> theses = new HashSet<>();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        Authority authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("PC Member", user, conferenceFullName);
+        if (authority == null) throw new BadCredentialsException("Not authorized.");
+        for (PCAudit pcAudit : authority.getPCAudits()) theses.add(pcAudit.getThesis());
+        return theses;
+    }
+
+    public PCAudit auditThesis(AuditThesisRequest request) throws BadCredentialsException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        Authority authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("PC Member", user, request.getConferenceFullName());
+        if (authority == null) throw new BadCredentialsException("Not authorized.");
+        PCAudit pcAudit = pcAuditRepository.findByAuthorityAndThesisID(authority, request.getThesisID());
+        if (pcAudit == null) throw new BadCredentialsException("Bad Operation.");
+        pcAudit.setScore(request.getScore());
+        pcAudit.setComment(request.getComment());
+        pcAudit.setConfidence(request.getConfidence());
+        pcAudit.setAudited(true);
+        pcAuditRepository.save(pcAudit);
+        return pcAudit;
+    }
+
+    public boolean endAudit(String conferenceFullName) {
+        Set<PCAudit> pcAudits = pcAuditRepository.findAllByAuthority_ConferenceFullName(conferenceFullName);
+        for (PCAudit pcAudit : pcAudits) if (!pcAudit.isAudited()) return false;
+        Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
+        for (Thesis thesis : theses) thesis.setAudited(true);
+        return true;
     }
 }

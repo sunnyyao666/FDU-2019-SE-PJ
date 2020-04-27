@@ -23,6 +23,7 @@ public class PCAudit implements Serializable {
     @JsonIgnore
     private Thesis thesis;
 
+    private Long thesisID;
     private int score;
 
     @Lob
@@ -30,12 +31,13 @@ public class PCAudit implements Serializable {
     private String comment;
 
     private String confidence;
-    private boolean auditing;
+    private boolean audited;
 
-    public PCAudit(Authority authority,Thesis thesis ){
-        this.authority=authority;
-        this.thesis=thesis;
-        this.auditing=true;
+    public PCAudit(Authority authority, Thesis thesis) {
+        this.authority = authority;
+        this.thesis = thesis;
+        this.thesisID = thesis.getId();
+        this.audited = false;
     }
 
     public Authority getAuthority() {
@@ -52,6 +54,11 @@ public class PCAudit implements Serializable {
 
     public void setThesis(Thesis thesis) {
         this.thesis = thesis;
+        this.thesisID = thesis.getId();
+    }
+
+    public Long getThesisID() {
+        return thesisID;
     }
 
     public int getScore() {
@@ -78,11 +85,11 @@ public class PCAudit implements Serializable {
         this.confidence = confidence;
     }
 
-    public boolean isAuditing() {
-        return auditing;
+    public boolean isAudited() {
+        return audited;
     }
 
-    public void setAuditing(boolean auditing) {
-        this.auditing = auditing;
+    public void setAudited(boolean auditing) {
+        this.audited = auditing;
     }
 }

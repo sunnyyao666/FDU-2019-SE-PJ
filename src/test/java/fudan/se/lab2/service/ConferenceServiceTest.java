@@ -44,12 +44,12 @@ class ConferenceServiceTest {
         User testChair = new User("testChair", encoder.encode(password), "fullName", "323@d.d", "off", new String[0]);
         userRepository.save(testChair);
         fakeLogin("testChair");
-        Conference testConference = new Conference("ABB", "fullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic, testChair);
+        Conference testConference = new Conference("ABB", "fullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", testChair);
         conferenceRepository.save(testConference);
 
-        ApplyConferenceRequest testRequest1 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic);
+        ApplyConferenceRequest testRequest1 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1");
         assertDoesNotThrow(() -> conferenceService.applyConference(testRequest1));
-        ApplyConferenceRequest testRequest2 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic);
+        ApplyConferenceRequest testRequest2 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1");
         assertThrows(ConferenceNameDuplicatedException.class, () -> conferenceService.applyConference(testRequest2));
     }
 
@@ -73,7 +73,7 @@ class ConferenceServiceTest {
         String password = "111111a";
         User testChair = new User("testChair", encoder.encode(password), "testConferenceFullName", "323@d.d", "off", new String[0]);
         userRepository.save(testChair);
-        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic, testChair);
+        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", testChair);
         conferenceRepository.save(testConference);
 
         assertDoesNotThrow(() -> conferenceService.changeSubmissionState("testConferenceFullName", true));
@@ -89,7 +89,7 @@ class ConferenceServiceTest {
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
         String[] testTopic = {"1"};
-        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic, testChair);
+        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", testChair);
         conferenceRepository.save(testConference);
 
         assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("testConferenceFullName", false));
@@ -109,7 +109,7 @@ class ConferenceServiceTest {
         String password = "111111a";
         User testChair = new User("testChair", encoder.encode(password), "testFullName", "323@d.d", "off", new String[0]);
         userRepository.save(testChair);
-        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic, testChair);
+        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", testChair);
         conferenceRepository.save(testConference);
         assertNotNull(conferenceService.searchConference("testConferenceFullName"));
     }

@@ -24,12 +24,12 @@ public class ApplyConferenceRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date releaseTime;
 
-    private String[] topic;
+    private String topics;
 
     public ApplyConferenceRequest() {
     }
 
-    public ApplyConferenceRequest(String abbreviation, String fullName, String place, Date startDate, Date endDate, Date releaseTime, Date deadline, String[] topic) {
+    public ApplyConferenceRequest(String abbreviation, String fullName, String place, Date startDate, Date endDate, Date releaseTime, Date deadline, String topics) {
         this.abbreviation = abbreviation;
         this.fullName = fullName;
         this.place = place;
@@ -37,7 +37,7 @@ public class ApplyConferenceRequest {
         this.endDate = endDate;
         this.releaseTime = releaseTime;
         this.deadline = deadline;
-        this.topic = topic;
+        this.topics = topics;
     }
 
 
@@ -97,11 +97,11 @@ public class ApplyConferenceRequest {
         return releaseTime;
     }
 
-    public void setTopic(String[] topic) {
-        this.topic = topic;
+    public void setTopics(String topics) {
+        this.topics = topics;
     }
 
-    public String[] getTopic() {
-        return topic;
+    public String getTopics() {
+        return topics;
     }
 }

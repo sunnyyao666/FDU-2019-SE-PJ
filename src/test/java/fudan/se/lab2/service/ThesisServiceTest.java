@@ -43,11 +43,10 @@ class ThesisServiceTest {
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
-        String[] testTopic = {"1"};
         String password = "111111a";
         User testChair = new User("testChair", encoder.encode(password), "testFullName", "323@d.d", "off", new String[0]);
         userRepository.save(testChair);
-        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, testTopic, testChair);
+        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", testChair);
         conferenceRepository.save(testConference);
         //添加会议
         User user = new User("testUsername", encoder.encode("111111a"), "testFullName", "testEmail@t.com", "off", new String[0]);
@@ -68,7 +67,7 @@ class ThesisServiceTest {
         JSONArray jsonarray = JSONArray.fromObject(testUsers);
         String authors = jsonarray.toString();
 
-        assertDoesNotThrow(() -> thesisService.submitThesis("testConferenceFullName", "title", "summary", authors, finalTestFile));
+        assertDoesNotThrow(() -> thesisService.submitThesis(-1L,"testConferenceFullName", "title", "summary", authors,"1", finalTestFile));
     }
 
     private void fakeLogin(String username) {

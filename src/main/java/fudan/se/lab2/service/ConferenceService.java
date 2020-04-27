@@ -38,7 +38,7 @@ public class ConferenceService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         Conference conference = conferenceRepository.findByFullName(request.getFullName());
         if (conference != null) throw new ConferenceNameDuplicatedException(request.getFullName());
-        conference = new Conference(request.getAbbreviation(), fullName, request.getPlace(), request.getStartDate(), request.getEndDate(), request.getDeadline(), request.getReleaseTime(), request.getTopic(), userRepository.findByUsername(userDetails.getUsername()));
+        conference = new Conference(request.getAbbreviation(), fullName, request.getPlace(), request.getStartDate(), request.getEndDate(), request.getDeadline(), request.getReleaseTime(), request.getTopics(), userRepository.findByUsername(userDetails.getUsername()));
         conferenceRepository.save(conference);
         return conference;
     }
@@ -57,9 +57,7 @@ public class ConferenceService {
             User creator = conference.getCreator();
             conference.setValid(true);
             Authority authority = new Authority("Chair", creator, conference.getFullName(), null);
-            StringBuilder finalTopic = new StringBuilder();
-            for (String topic : conference.getTopic()) finalTopic.append(" ").append(topic);
-            authority.setTopics(finalTopic.append(" ").toString());
+            authority.setTopics(conference.getTopics());
             authorityRepository.save(authority);
 
         }
@@ -79,13 +77,4 @@ public class ConferenceService {
         return true;
     }
 
-    public boolean startAudit(String conferenceFullName, boolean passed) {
-        Conference conference = conferenceRepository.findByFullName(conferenceFullName);
-        if (authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size() < 2)
-            return false;
-        conference.setAuditing(true);
-        conference.setSubmitting(false);
-        conferenceRepository.save(conference);
-        return true;
-    }
 }

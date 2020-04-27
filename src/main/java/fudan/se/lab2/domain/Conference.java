@@ -25,7 +25,7 @@ public class Conference implements Serializable {
     private Date endDate;
     private Date deadline;
     private Date releaseTime;
-    private String[] topic;
+    private String topics;
     private boolean applying; //是否在申请
     private boolean valid; //是否通过审核
     private boolean submitting; //是否开放投稿
@@ -40,7 +40,7 @@ public class Conference implements Serializable {
     public Conference() {
     }
 
-    public Conference(String abbreviation, String fullName, String place, Date startDate, Date endDate, Date deadline, Date releaseTime, String[] topic, User creator) {
+    public Conference(String abbreviation, String fullName, String place, Date startDate, Date endDate, Date deadline, Date releaseTime, String topics, User creator) {
         this.abbreviation = abbreviation;
         this.fullName = fullName;
         this.place = place;
@@ -48,7 +48,7 @@ public class Conference implements Serializable {
         this.endDate = endDate;
         this.deadline = deadline;
         this.releaseTime = releaseTime;
-        this.topic = topic;
+        this.topics = topics;
         this.creator = creator;
         this.creatorName = creator.getUsername();
         this.applying = true;
@@ -134,12 +134,12 @@ public class Conference implements Serializable {
         this.releaseTime = releaseTime;
     }
 
-    public String[] getTopic() {
-        return topic;
+    public String getTopics() {
+        return topics;
     }
 
-    public void setTopic(String[] topic) {
-        this.topic = topic;
+    public void setTopics(String topics) {
+        this.topics = topics;
     }
 
     public boolean isApplying() {

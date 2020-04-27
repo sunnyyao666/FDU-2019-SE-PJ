@@ -11,7 +11,7 @@ import java.util.Set;
  * @author YHT
  */
 @Entity
-public class Authority implements GrantedAuthority {
+public class Authority implements GrantedAuthority, Comparable<Authority> {
     private static final long serialVersionUID = -8974777274465208640L;
 
     @Id
@@ -98,11 +98,16 @@ public class Authority implements GrantedAuthority {
         this.topics = topics;
     }
 
-    public Set<PCAudit> getPcAudits() {
+    public Set<PCAudit> getPCAudits() {
         return pcAudits;
     }
 
-    public void setPcAudits(Set<PCAudit> pcAudits) {
+    public void setPCAudits(Set<PCAudit> pcAudits) {
         this.pcAudits = pcAudits;
+    }
+
+    @Override
+    public int compareTo(Authority o) {
+        return this.pcAudits.size() - o.pcAudits.size();
     }
 }

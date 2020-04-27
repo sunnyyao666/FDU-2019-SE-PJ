@@ -30,6 +30,7 @@ public class Thesis implements Serializable {
     private String authors;
     private String topics;
     private String path;
+    private boolean audited;
 
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "thesis")
     private Set<PCAudit> pcAudits = new HashSet<>();
@@ -45,6 +46,7 @@ public class Thesis implements Serializable {
         this.authors = authors;
         this.topics = topics;
         this.path = path;
+        this.audited = false;
     }
 
     public Long getId() {
@@ -105,6 +107,14 @@ public class Thesis implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public boolean isAudited() {
+        return audited;
+    }
+
+    public void setAudited(boolean audited) {
+        this.audited = audited;
     }
 
     public Set<PCAudit> getPcAudits() {

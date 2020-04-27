@@ -6,6 +6,7 @@ import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.AuthorityRepository;
 import fudan.se.lab2.repository.ConferenceRepository;
 import fudan.se.lab2.repository.UserRepository;
+import net.sf.json.JSONArray;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,8 +51,8 @@ public class Lab2Application {
                 userRepository.save(new User("44444", passwordEncoder.encode("123456"), "Zhang Si", "4@163.com", "4", region));
                 userRepository.save(new User("55555", passwordEncoder.encode("123456"), "Zhang Wu", "5@163.com", "5", region));
                 String[] topic = {"1"};
-                conferenceRepository.save(new Conference("12", "12345", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), topic, userRepository.findByUsername("11111")));
-                Conference conference = new Conference("24", "23456", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), topic, userRepository.findByUsername("11111"));
+                conferenceRepository.save(new Conference("12", "12345", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), JSONArray.fromObject(topic).toString(), userRepository.findByUsername("11111")));
+                Conference conference = new Conference("24", "23456", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), JSONArray.fromObject(topic).toString(), userRepository.findByUsername("11111"));
                 conference.setApplying(false);
                 conference.setValid(true);
                 conferenceRepository.save(conference);
