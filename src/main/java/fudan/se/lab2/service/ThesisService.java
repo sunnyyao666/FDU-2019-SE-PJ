@@ -84,41 +84,66 @@ public class ThesisService {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         if (authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size() < 2)
             return false;
-        if (passed) {
-
-        } else {
-            Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
-            List<Authority> pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
+        Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
+        for (Thesis thesis : theses) {
+            List<Authority> pcMembers = new ArrayList<>();
+            if (passed) {
+                List<String> topics = (List<String>) JSONArray.toList(JSONArray.fromObject(thesis.getTopics()), String.class, new JsonConfig());
+                for (String topic : topics)
+                    pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullNameAndTopicsContaining("PC Member", conferenceFullName, topic));
+                if (topics.size() < 2)
+                    pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
+            } else
+                pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
             pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
             Collections.sort(pcMembers);
-            for (Thesis thesis : theses) {
-                //List<String> topics = (List<String>) JSONArray.toList(JSONArray.fromObject(thesis.getTopics()), String.class, new JsonConfig());
-                JSONArray jsonAuthors = JSONArray.fromObject(thesis.getAuthors());
-                Map<String, String> authors = new HashMap<>();
-                for (int i = 0; i < jsonAuthors.size(); i++) {
-                    JSONObject jsonObject = jsonAuthors.getJSONObject(i);
-                    authors.put(jsonObject.get("fullName").toString(), jsonObject.get("email").toString());
-                }
-                int n = 0;
-                for (Authority pcMember : pcMembers) {
-                    User user = pcMember.getUser();
-                    boolean isAuthor = false;
-                    for (Map.Entry<String, String> entry : authors.entrySet())
-                        if ((user.getFullName().equals(entry.getKey())) && (user.getEmail().equals(entry.getValue()))) {
-                            isAuthor = true;
-                            break;
-                        }
-                    if (isAuthor) continue;
-                    PCAudit pcAudit = new PCAudit(pcMember, thesis);
-                    pcAuditRepository.save(pcAudit);
-                    Set<PCAudit> newPCAudit = pcMember.getPCAudits();
-                    newPCAudit.add(pcAudit);
-                    pcMember.setPCAudits(newPCAudit);
-                    n++;
-                    if (n == 3) break;
-                }
-                if (n == 3) Collections.sort(pcMembers);
-                else {
+            JSONArray jsonAuthors = JSONArray.fromObject(thesis.getAuthors());
+            Map<String, String> authors = new HashMap<>();
+            for (int i = 0; i < jsonAuthors.size(); i++) {
+                JSONObject jsonObject = jsonAuthors.getJSONObject(i);
+                authors.put(jsonObject.get("fullName").toString(), jsonObject.get("email").toString());
+            }
+            int n = 0;
+            for (Authority pcMember : pcMembers) {
+                User user = pcMember.getUser();
+                boolean isAuthor = false;
+                for (Map.Entry<String, String> entry : authors.entrySet())
+                    if ((user.getFullName().equals(entry.getKey())) && (user.getEmail().equals(entry.getValue()))) {
+                        isAuthor = true;
+                        break;
+                    }
+                if (isAuthor) continue;
+                PCAudit pcAudit = new PCAudit(pcMember, thesis);
+                pcAuditRepository.save(pcAudit);
+                n++;
+                if (n == 3) break;
+            }
+            if (n < 3) {
+                if ((passed) && (pcMembers.size() < authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size())) {
+                    pcAuditRepository.deleteAllByThesisID(thesis.getId());
+                    pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
+                    pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
+                    Collections.sort(pcMembers);
+                    n = 0;
+                    for (Authority pcMember : pcMembers) {
+                        User user = pcMember.getUser();
+                        boolean isAuthor = false;
+                        for (Map.Entry<String, String> entry : authors.entrySet())
+                            if ((user.getFullName().equals(entry.getKey())) && (user.getEmail().equals(entry.getValue()))) {
+                                isAuthor = true;
+                                break;
+                            }
+                        if (isAuthor) continue;
+                        PCAudit pcAudit = new PCAudit(pcMember, thesis);
+                        pcAuditRepository.save(pcAudit);
+                        n++;
+                        if (n == 3) break;
+                    }
+                    if (n < 3) {
+                        pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
+                        return false;
+                    }
+                } else {
                     pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
                     return false;
                 }
@@ -161,7 +186,10 @@ public class ThesisService {
         Set<PCAudit> pcAudits = pcAuditRepository.findAllByAuthority_ConferenceFullName(conferenceFullName);
         for (PCAudit pcAudit : pcAudits) if (!pcAudit.isAudited()) return false;
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
-        for (Thesis thesis : theses) thesis.setAudited(true);
+        for (Thesis thesis : theses) {
+            thesis.setAudited(true);
+            thesisRepository.save(thesis);
+        }
         return true;
     }
 }

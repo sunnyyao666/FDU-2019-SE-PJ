@@ -19,4 +19,6 @@ public interface AuthorityRepository extends CrudRepository<Authority, Long> {
     Set<Authority> findAllByAuthorityContainingAndUserAndConferenceFullName(String authority, User user, String conferenceFullName);
 
     Authority findByAuthorityAndUserAndConferenceFullName(String authority, User user, String conferenceFullName);
+
+    Set<Authority> findAllByAuthorityAndConferenceFullNameAndTopicsContaining(String authority, String conferenceFullName, String topics);
 }
