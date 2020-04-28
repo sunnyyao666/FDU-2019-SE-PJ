@@ -27,7 +27,9 @@ public class ThesisController {
 
     @PostMapping("/startAudit")
     public ResponseEntity<?> startAudit(@RequestBody AuditApplicationRequest request) {
-        return ResponseEntity.ok(thesisService.startAudit(request.getConferenceFullName(), request.isPassed()));
+        if (request.isPassed())
+            return ResponseEntity.ok(thesisService.startAudit1(request.getConferenceFullName()));
+        else return ResponseEntity.ok(thesisService.startAudit2(request.getConferenceFullName()));
     }
 
     @PostMapping("/pcGetTheses")

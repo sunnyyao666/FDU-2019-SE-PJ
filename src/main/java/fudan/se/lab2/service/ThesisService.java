@@ -43,7 +43,8 @@ public class ThesisService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        File target = new File(System.getProperty("user.dir"), "/static/" + conferenceFullName + "/" + user.getUsername() + "/");
+        String directoryPath = System.getProperty("user.dir") + "/static/" + conferenceFullName + "/" + user.getUsername() + "/";
+        File target = new File(directoryPath);
         if (!target.exists()) target.mkdirs();
         StringBuilder path = new StringBuilder(target.getAbsolutePath() + "/" + title);
         while (new File(path + ".pdf").exists()) path.append("(1)");
@@ -80,66 +81,27 @@ public class ThesisService {
         }
     }
 
-    public boolean startAudit(String conferenceFullName, boolean passed) {
+    public boolean startAudit1(String conferenceFullName) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         if (authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size() < 2)
             return false;
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
         for (Thesis thesis : theses) {
             List<Authority> pcMembers = new ArrayList<>();
-            if (passed) {
-                List<String> topics = (List<String>) JSONArray.toList(JSONArray.fromObject(thesis.getTopics()), String.class, new JsonConfig());
-                for (String topic : topics)
-                    pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullNameAndTopicsContaining("PC Member", conferenceFullName, topic));
-                if (topics.size() < 2)
-                    pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
-            } else
+            List<String> topics = (List<String>) JSONArray.toList(JSONArray.fromObject(thesis.getTopics()), String.class, new JsonConfig());
+            for (String topic : topics)
+                pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullNameAndTopicsContaining("PC Member", conferenceFullName, topic));
+            if (topics.size() < 2)
                 pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
             pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
             Collections.sort(pcMembers);
-            JSONArray jsonAuthors = JSONArray.fromObject(thesis.getAuthors());
-            Map<String, String> authors = new HashMap<>();
-            for (int i = 0; i < jsonAuthors.size(); i++) {
-                JSONObject jsonObject = jsonAuthors.getJSONObject(i);
-                authors.put(jsonObject.get("fullName").toString(), jsonObject.get("email").toString());
-            }
-            int n = 0;
-            for (Authority pcMember : pcMembers) {
-                User user = pcMember.getUser();
-                boolean isAuthor = false;
-                for (Map.Entry<String, String> entry : authors.entrySet())
-                    if ((user.getFullName().equals(entry.getKey())) && (user.getEmail().equals(entry.getValue()))) {
-                        isAuthor = true;
-                        break;
-                    }
-                if (isAuthor) continue;
-                PCAudit pcAudit = new PCAudit(pcMember, thesis);
-                pcAuditRepository.save(pcAudit);
-                n++;
-                if (n == 3) break;
-            }
-            if (n < 3) {
-                if ((passed) && (pcMembers.size() < authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size())) {
+            if (corresponding(thesis, pcMembers) < 3) {
+                if (pcMembers.size() < authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size()) {
                     pcAuditRepository.deleteAllByThesisID(thesis.getId());
                     pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
                     pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
                     Collections.sort(pcMembers);
-                    n = 0;
-                    for (Authority pcMember : pcMembers) {
-                        User user = pcMember.getUser();
-                        boolean isAuthor = false;
-                        for (Map.Entry<String, String> entry : authors.entrySet())
-                            if ((user.getFullName().equals(entry.getKey())) && (user.getEmail().equals(entry.getValue()))) {
-                                isAuthor = true;
-                                break;
-                            }
-                        if (isAuthor) continue;
-                        PCAudit pcAudit = new PCAudit(pcMember, thesis);
-                        pcAuditRepository.save(pcAudit);
-                        n++;
-                        if (n == 3) break;
-                    }
-                    if (n < 3) {
+                    if (corresponding(thesis, pcMembers) < 3) {
                         pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
                         return false;
                     }
@@ -153,6 +115,49 @@ public class ThesisService {
         conference.setSubmitting(false);
         conferenceRepository.save(conference);
         return true;
+    }
+
+    public boolean startAudit2(String conferenceFullName) {
+        Conference conference = conferenceRepository.findByFullName(conferenceFullName);
+        Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
+        for (Thesis thesis : theses) {
+            List<Authority> pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
+            pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
+            Collections.sort(pcMembers);
+            if (corresponding(thesis, pcMembers) < 3) {
+                pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
+                return false;
+            }
+        }
+        conference.setAuditing(true);
+        conference.setSubmitting(false);
+        conferenceRepository.save(conference);
+        return true;
+    }
+
+    private int corresponding(Thesis thesis, List<Authority> pcMembers) {
+        JSONArray jsonAuthors = JSONArray.fromObject(thesis.getAuthors());
+        Map<String, String> authors = new HashMap<>();
+        for (int i = 0; i < jsonAuthors.size(); i++) {
+            JSONObject jsonObject = jsonAuthors.getJSONObject(i);
+            authors.put(jsonObject.get("fullName").toString(), jsonObject.get("email").toString());
+        }
+        int n = 0;
+        for (Authority pcMember : pcMembers) {
+            User user = pcMember.getUser();
+            boolean isAuthor = false;
+            for (Map.Entry<String, String> entry : authors.entrySet())
+                if ((user.getFullName().equals(entry.getKey())) && (user.getEmail().equals(entry.getValue()))) {
+                    isAuthor = true;
+                    break;
+                }
+            if (isAuthor) continue;
+            PCAudit pcAudit = new PCAudit(pcMember, thesis);
+            pcAuditRepository.save(pcAudit);
+            n++;
+            if (n == 3) return 3;
+        }
+        return n;
     }
 
     public Set<Thesis> pcGetTheses(String conferenceFullName) throws BadCredentialsException {
