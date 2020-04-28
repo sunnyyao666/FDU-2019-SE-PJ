@@ -43,12 +43,11 @@ public class ThesisService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        String directoryPath = System.getProperty("user.dir") + "/static/" + conferenceFullName + "/" + user.getUsername() + "/";
-        File target = new File(directoryPath);
+        File target = new File(new File(new File(System.getProperty("user.dir"), "static"), conferenceFullName), user.getUsername());
         if (!target.exists()) target.mkdirs();
-        StringBuilder path = new StringBuilder(target.getAbsolutePath() + "/" + title);
-        while (new File(path + ".pdf").exists()) path.append("(1)");
-        String thesisPath = path + ".pdf";
+        StringBuilder realTitle = new StringBuilder(title);
+        while (new File(target.getAbsolutePath(), realTitle.toString() + ".pdf").exists()) realTitle.append("(1)");
+        String thesisPath = new File(target.getAbsolutePath(), realTitle.toString() + ".pdf").getAbsolutePath();
         if (id == -1) {
             try (FileOutputStream out = new FileOutputStream(thesisPath)) {
                 out.write(file.getBytes());
@@ -83,8 +82,6 @@ public class ThesisService {
 
     public boolean startAudit1(String conferenceFullName) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
-        if (authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size() < 2)
-            return false;
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
         for (Thesis thesis : theses) {
             List<Authority> pcMembers = new ArrayList<>();
