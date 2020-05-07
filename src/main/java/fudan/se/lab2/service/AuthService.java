@@ -89,9 +89,8 @@ public class AuthService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        Set<Authority> authorities = authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Undetermined PC Member", user, conferenceFullName);
-        if (authorities == null) throw new BadCredentialsException("Bad operation.");
-        Authority authority = authorities.iterator().next();
+        Authority authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("Undetermined PC Member", user, conferenceFullName);
+        if (authority == null) throw new BadCredentialsException("Bad operation.");
         if (topics.equals("false")) authority.setAuthority("Denied PC Member");
         else {
             authority.setAuthority("PC Member");
