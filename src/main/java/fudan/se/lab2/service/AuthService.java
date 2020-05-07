@@ -4,6 +4,7 @@ import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.AuthorityRepository;
+import fudan.se.lab2.repository.ConferenceRepository;
 import fudan.se.lab2.repository.UserRepository;
 import fudan.se.lab2.controller.request.RegisterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,14 @@ import java.util.Set;
 public class AuthService {
     private UserRepository userRepository;
     private AuthorityRepository authorityRepository;
+    private ConferenceRepository conferenceRepository;
     private PasswordEncoder encoder;
 
     @Autowired
-    public AuthService(UserRepository userRepository, AuthorityRepository authorityRepository, PasswordEncoder encoder) {
+    public AuthService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
+        this.conferenceRepository = conferenceRepository;
         this.encoder = encoder;
     }
 
@@ -72,7 +75,9 @@ public class AuthService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User inviter = userRepository.findByUsername(userDetails.getUsername());
         User user = userRepository.findByUsername(username);
-        authorityRepository.save(new Authority("Undetermined PC Member", user, conferenceFullName, inviter.getUsername()));
+        Authority authority = new Authority("Undetermined PC Member", user, conferenceFullName, inviter.getUsername());
+        authority.setTopics(conferenceRepository.findByFullName(conferenceFullName).getTopics());
+        authorityRepository.save(authority);
         return true;
     }
 
