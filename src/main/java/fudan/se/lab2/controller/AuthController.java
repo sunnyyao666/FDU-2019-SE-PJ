@@ -57,8 +57,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.listInviteHistory(request.getConferenceFullName()));
     }
 
+
     @PostMapping("/auditPCInvitationApplication")
-    public ResponseEntity<?> auditPCInvitationApplication(String conferenceFullName, String topics) {
-        return ResponseEntity.ok(authService.auditPCInvitationApplication(conferenceFullName, topics));
+    public ResponseEntity<?> auditPCInvitationApplication( @RequestBody AuditPCRequest request) {
+        return ResponseEntity.ok(authService.auditPCInvitationApplication(request.getConferenceFullName(), request.getTopics()));
     }
 }

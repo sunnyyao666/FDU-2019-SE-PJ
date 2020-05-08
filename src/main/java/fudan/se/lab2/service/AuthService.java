@@ -84,13 +84,12 @@ public class AuthService {
     public Set<Authority> listInviteHistory(String conferenceFullName) {
         return authorityRepository.findAllByAuthorityContainingAndConferenceFullName("PC Member", conferenceFullName);
     }
-
     public boolean auditPCInvitationApplication(String conferenceFullName, String topics) throws BadCredentialsException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
         Set<Authority> authorities = authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Undetermined PC Member", user, conferenceFullName);
-        if (authorities == null) throw new BadCredentialsException("Bad operation.");
+        if (authorities.isEmpty()) throw new BadCredentialsException("Bad operation.");
         Authority authority = authorities.iterator().next();
         if (topics.equals("false")) authority.setAuthority("Denied PC Member");
         else {
