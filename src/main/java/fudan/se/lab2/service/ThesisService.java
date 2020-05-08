@@ -83,10 +83,10 @@ public class ThesisService {
         }
     }
 
-    public boolean startAudit1(String conferenceFullName) {
+    public String startAudit1(String conferenceFullName) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
-        if (theses.isEmpty()) return false;
+        if (theses.isEmpty()) return "No thesis";
         for (Thesis thesis : theses) {
             List<Authority> pcMembers = new ArrayList<>();
             List<String> topics = (List<String>) JSONArray.toList(JSONArray.fromObject(thesis.getTopics()), String.class, new JsonConfig());
@@ -104,37 +104,37 @@ public class ThesisService {
                     Collections.sort(pcMembers);
                     if (corresponding(thesis, pcMembers) < 3) {
                         pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
-                        return false;
+                        return "Fail to distribute";
                     }
                 } else {
                     pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
-                    return false;
+                    return "Fail to distribute";
                 }
             }
         }
         conference.setAuditing(true);
         conference.setSubmitting(false);
         conferenceRepository.save(conference);
-        return true;
+        return "OK";
     }
 
-    public boolean startAudit2(String conferenceFullName) {
+    public String startAudit2(String conferenceFullName) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
-        if (theses.isEmpty()) return false;
+        if (theses.isEmpty()) return "No thesis";
         for (Thesis thesis : theses) {
             List<Authority> pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
             pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
             Collections.sort(pcMembers);
             if (corresponding(thesis, pcMembers) < 3) {
                 pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
-                return false;
+                return "Fail to distribute";
             }
         }
         conference.setAuditing(true);
         conference.setSubmitting(false);
         conferenceRepository.save(conference);
-        return true;
+        return "OK";
     }
 
     private int corresponding(Thesis thesis, List<Authority> pcMembers) {
