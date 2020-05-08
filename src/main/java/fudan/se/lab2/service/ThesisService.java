@@ -86,6 +86,7 @@ public class ThesisService {
     public boolean startAudit1(String conferenceFullName) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
+        if (theses.isEmpty()) return false;
         for (Thesis thesis : theses) {
             List<Authority> pcMembers = new ArrayList<>();
             List<String> topics = (List<String>) JSONArray.toList(JSONArray.fromObject(thesis.getTopics()), String.class, new JsonConfig());
@@ -120,6 +121,7 @@ public class ThesisService {
     public boolean startAudit2(String conferenceFullName) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
+        if (theses.isEmpty()) return false;
         for (Thesis thesis : theses) {
             List<Authority> pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
             pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));

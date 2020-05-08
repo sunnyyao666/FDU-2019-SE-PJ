@@ -21,7 +21,7 @@ public class ThesisController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<?> submitThesis(Long id, String conferenceFullName, String title, String summary, String authors, String topics, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> submitThesis(@RequestParam("id") Long id, @RequestParam("conferenceFullName") String conferenceFullName, @RequestParam("title") String title, @RequestParam("summary") String summary, @RequestParam("authors") String authors, @RequestParam("topics") String topics, @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(thesisService.submitThesis(id, conferenceFullName, title, summary, authors, topics, file));
     }
 
@@ -33,7 +33,7 @@ public class ThesisController {
     }
 
     @PostMapping("/pcGetTheses")
-    public ResponseEntity<?> pcGetTheses(String conferenceFullName) {
+    public ResponseEntity<?> pcGetTheses(@RequestParam("conferenceFullName") String conferenceFullName) {
         return ResponseEntity.ok(thesisService.pcGetTheses(conferenceFullName));
     }
 
@@ -43,7 +43,7 @@ public class ThesisController {
     }
 
     @PostMapping("/endAudit")
-    public ResponseEntity<?> endAudit(String conferenceFullName) {
+    public ResponseEntity<?> endAudit(@RequestParam("conferenceFullName") String conferenceFullName) {
         return ResponseEntity.ok(thesisService.endAudit(conferenceFullName));
     }
 }

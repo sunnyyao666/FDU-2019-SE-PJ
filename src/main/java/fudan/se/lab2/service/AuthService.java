@@ -84,6 +84,7 @@ public class AuthService {
     public Set<Authority> listInviteHistory(String conferenceFullName) {
         return authorityRepository.findAllByAuthorityContainingAndConferenceFullName("PC Member", conferenceFullName);
     }
+
     public boolean auditPCInvitationApplication(String conferenceFullName, String topics) throws BadCredentialsException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
