@@ -197,6 +197,9 @@ public class ThesisService {
             thesis.setAudited(true);
             thesisRepository.save(thesis);
         }
+        Conference conference = conferenceRepository.findByFullName(conferenceFullName);
+        conference.setSubmitting(true);
+        conferenceRepository.save(conference);
         return true;
     }
 }
