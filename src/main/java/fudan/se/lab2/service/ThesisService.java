@@ -49,13 +49,14 @@ public class ThesisService {
         while (new File(target.getAbsolutePath(), realTitle.toString() + ".pdf").exists()) realTitle.append("(1)");
         String thesisPath = new File(target.getAbsolutePath(), realTitle.toString() + ".pdf").getAbsolutePath();
         if (id == -1) {
+            String fileName = file.getOriginalFilename().substring(0, file.getOriginalFilename().indexOf("."));
             try (FileOutputStream out = new FileOutputStream(thesisPath)) {
                 out.write(file.getBytes());
                 out.flush();
             } catch (IOException ex) {
                 throw new BadCredentialsException("Bad uploading!");
             }
-            Thesis thesis = new Thesis(conferenceFullName, title, summary, user, authors, topics, thesisPath);
+            Thesis thesis = new Thesis(conferenceFullName, title, summary, user, authors, topics, fileName, thesisPath);
             thesisRepository.save(thesis);
             if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName).isEmpty())
                 authorityRepository.save(new Authority("Author", user, conferenceFullName, null));
@@ -67,6 +68,8 @@ public class ThesisService {
             thesis.setAuthors(authors);
             thesis.setTopics(topics);
             if (!file.isEmpty()) {
+                String fileName = file.getOriginalFilename().substring(0, file.getOriginalFilename().indexOf("."));
+                thesis.setFileName(fileName);
                 try (FileOutputStream out = new FileOutputStream(thesisPath)) {
                     out.write(file.getBytes());
                     out.flush();

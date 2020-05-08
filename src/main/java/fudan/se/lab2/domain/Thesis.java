@@ -29,6 +29,7 @@ public class Thesis implements Serializable {
     private User submitter;
     private String authors;
     private String topics;
+    private String fileName;
     private String path;
     private boolean audited;
 
@@ -38,13 +39,14 @@ public class Thesis implements Serializable {
     public Thesis() {
     }
 
-    public Thesis(String conferenceFullName, String title, String summary, User submitter, String authors, String topics, String path) {
+    public Thesis(String conferenceFullName, String title, String summary, User submitter, String authors, String topics, String fileName, String path) {
         this.conferenceFullName = conferenceFullName;
         this.title = title;
         this.summary = summary;
         this.submitter = submitter;
         this.authors = authors;
         this.topics = topics;
+        this.fileName=fileName;
         this.path = path;
         this.audited = false;
     }
@@ -99,6 +101,14 @@ public class Thesis implements Serializable {
 
     public String getTopics() {
         return topics;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getPath() {
