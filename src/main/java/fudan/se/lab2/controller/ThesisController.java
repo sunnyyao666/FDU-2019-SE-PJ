@@ -2,6 +2,7 @@ package fudan.se.lab2.controller;
 
 import fudan.se.lab2.controller.request.AuditApplicationRequest;
 import fudan.se.lab2.controller.request.AuditThesisRequest;
+import fudan.se.lab2.controller.request.SearchRequest;
 import fudan.se.lab2.service.ThesisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,8 @@ public class ThesisController {
     }
 
     @PostMapping("/pcGetTheses")
-    public ResponseEntity<?> pcGetTheses(@RequestParam("conferenceFullName") String conferenceFullName) {
-        return ResponseEntity.ok(thesisService.pcGetTheses(conferenceFullName));
+    public ResponseEntity<?> pcGetTheses(@RequestBody SearchRequest request) {
+        return ResponseEntity.ok(thesisService.pcGetTheses(request.getConferenceFullName()));
     }
 
     @PostMapping("/auditThesis")
@@ -43,7 +44,7 @@ public class ThesisController {
     }
 
     @PostMapping("/endAudit")
-    public ResponseEntity<?> endAudit(@RequestParam("conferenceFullName") String conferenceFullName) {
-        return ResponseEntity.ok(thesisService.endAudit(conferenceFullName));
+    public ResponseEntity<?> endAudit(@RequestBody SearchRequest request) {
+        return ResponseEntity.ok(thesisService.endAudit(request.getConferenceFullName()));
     }
 }
