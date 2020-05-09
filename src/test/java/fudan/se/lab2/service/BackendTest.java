@@ -44,13 +44,11 @@ class BackendTest {
     @Autowired
     PasswordEncoder encoder;
 
-
-
     protected void fakeLogin() {
         fakeLogin("testUsername");
     }
 
-    protected void fakeLogin(String username) {
+    void fakeLogin(String username) {
         //伪造登录信息
         User userDetails = new User();
         userDetails.setFullName("testFullName");
@@ -59,39 +57,36 @@ class BackendTest {
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
-    protected User addUser(String username){
+    User addUser(String username) {
         String password = "111111a";
         User user = new User(username, encoder.encode(password), "testFullName", "323@d.d", "off", new String[0]);
         userRepository.save(user);
         return user;
     }
 
-    protected Conference addConference(User chair,String ConferenceFullName){
+    Conference addConference(User chair, String conferenceFullName) {
         Date testStartDate = new Date(10);
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
-        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate,"1", chair);
+        Conference testConference = new Conference("ABB", conferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", chair);
         conferenceRepository.save(testConference);
         return testConference;
     }
 
-    protected Conference addConference(User chair,String ConferenceFullName,String topics){
+    Conference addConference(User chair, String ConferenceFullName, String topics) {
         Date testStartDate = new Date(10);
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
-        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate,topics, chair);
+        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, topics, chair);
         conferenceRepository.save(testConference);
         return testConference;
     }
 
-    protected Thesis addThesis(String conferenceFullName,String title,String summary,User user,String authors,String topics,String fileName,String thesisPath){
+    Thesis addThesis(String conferenceFullName, String title, String summary, User user, String authors, String topics, String fileName, String thesisPath) {
         Thesis thesis = new Thesis(conferenceFullName, title, summary, user, authors, topics, fileName, thesisPath);
         thesisRepository.save(thesis);
         return thesis;
     }
-
-
-
 }

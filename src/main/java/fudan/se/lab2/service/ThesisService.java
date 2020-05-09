@@ -167,6 +167,7 @@ public class ThesisService {
 //            if (isAuthor) continue;
             PCAudit pcAudit = new PCAudit(pcMember, thesis);
             pcAuditRepository.save(pcAudit);
+            pcMember.getPCAudits().add(pcAudit);
             n++;
             if (n == 3) return 3;
         }
@@ -214,7 +215,7 @@ public class ThesisService {
         return true;
     }
 
-    public void downloadThesis(Long id, HttpServletResponse response)throws BadCredentialsException {
+    public void downloadThesis(Long id, HttpServletResponse response) throws BadCredentialsException {
         Thesis thesis = thesisRepository.findById(id).get();
         try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
              OutputStream outputStream = response.getOutputStream();) {

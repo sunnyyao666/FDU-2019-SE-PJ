@@ -36,7 +36,7 @@ class ConferenceServiceTest {
     @Test
     @Transactional
     void applyConference() {
-        User testChair =addUser("testChair");
+        User testChair = addUser("testChair");
         fakeLogin("testChair");
         Conference testConference = addConference(testChair, "fullName");
         conferenceRepository.save(testConference);
@@ -63,14 +63,14 @@ class ConferenceServiceTest {
     @Transactional
     void changeSubmissionState() {
         User testChair = addUser("testChair");
-        addConference(testChair,"testConferenceFullName");
+        addConference(testChair, "testConferenceFullName");
         assertDoesNotThrow(() -> conferenceService.changeSubmissionState("testConferenceFullName", true));
     }
 
     @Test
     @Transactional
     void auditConferenceApplication() {
-        User testChair =addUser("testChair");
+        User testChair = addUser("testChair");
         addConference(testChair, "testConferenceFullName");
         assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("testConferenceFullName", false));
         assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("testConferenceFullName", true));
@@ -81,16 +81,16 @@ class ConferenceServiceTest {
     @Test
     @Transactional
     void searchConference() {
-        User testChair =addUser("testChair");
+        User testChair = addUser("testChair");
         addConference(testChair, "testConferenceFullName");
         assertNotNull(conferenceService.searchConference("testConferenceFullName"));
     }
 
-    protected void fakeLogin() {
+    void fakeLogin() {
         fakeLogin("testUsername");
     }
 
-    protected void fakeLogin(String username) {
+    void fakeLogin(String username) {
         //伪造登录信息
         User userDetails = new User();
         userDetails.setFullName("testFullName");
@@ -99,34 +99,30 @@ class ConferenceServiceTest {
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
-    protected User addUser(String username){
+    User addUser(String username) {
         String password = "111111a";
         User user = new User(username, encoder.encode(password), "testFullName", "323@d.d", "off", new String[0]);
         userRepository.save(user);
         return user;
     }
 
-    protected Conference addConference(User chair,String ConferenceFullName){
+    Conference addConference(User chair, String ConferenceFullName) {
         Date testStartDate = new Date(10);
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
-        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate,"1", chair);
+        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", chair);
         conferenceRepository.save(testConference);
         return testConference;
     }
 
-    protected Conference addConference(User chair,String ConferenceFullName,String topics){
+    protected Conference addConference(User chair, String ConferenceFullName, String topics) {
         Date testStartDate = new Date(10);
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
-        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate,topics, chair);
+        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, topics, chair);
         conferenceRepository.save(testConference);
         return testConference;
     }
-
-
-
-
 }

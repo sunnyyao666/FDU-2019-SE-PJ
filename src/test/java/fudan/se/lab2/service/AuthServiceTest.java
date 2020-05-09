@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class AuthServiceTest{
+class AuthServiceTest {
     @Autowired
     AuthService authService;
     @Autowired
@@ -77,24 +77,19 @@ class AuthServiceTest{
     @Test
     @Transactional
     void invitePCMember() {
-        Date testStartDate = new Date(10);
-        Date testEndDate = new Date(11);
-        Date testReleaseDate = new Date(2);
-        Date testDDLDate = new Date(2);
-
-        User testChair =addUser("testChair");
-        addConference(testChair,"testConferenceFullName");
+        User testChair = addUser("testChair");
+        addConference(testChair, "testConferenceFullName");
         authorityRepository.save(new Authority("Chair", testChair, "testConferenceFullName", null));
         addUser("testUsername");
         fakeLogin("testChair");
-        assertEquals(authService.invitePCMember("testUsername", "testConferenceFullName"),true);
+        assertTrue(authService.invitePCMember("testUsername", "testConferenceFullName"));
     }
 
     @Test
     @Transactional
     void searchUsers() {
         User testChair = addUser("testChair");
-        addConference( testChair,"testConferenceFullName");
+        addConference(testChair, "testConferenceFullName");
         authorityRepository.save(new Authority("Chair", testChair, "testConferenceFullName", null));
         addUser("testUsername");
         assertNotNull(authService.searchUsers("User", "testConferenceFullName"));
@@ -107,8 +102,8 @@ class AuthServiceTest{
     @Transactional
     void auditPCInvitationApplication() {
         User testChair = addUser("testChair");
-        Conference testConference =addConference(testChair,"testConferenceFullName");
-        User user =addUser("testUsername");
+        Conference testConference = addConference(testChair, "testConferenceFullName");
+        User user = addUser("testUsername");
         authorityRepository.save(new Authority("Undetermined PC Member", user, "testConferenceFullName", "testChair"));
 
         fakeLogin();
@@ -121,8 +116,8 @@ class AuthServiceTest{
     @Test
     @Transactional
     void listInviteHistory() {
-        User chair= addUser("chair");
-        addConference(chair,"conferenceFullName");
+        User chair = addUser("chair");
+        addConference(chair, "conferenceFullName");
         addUser("user1");
         addUser("user2");
         fakeLogin("chair");
@@ -131,11 +126,11 @@ class AuthServiceTest{
         assertNotNull(authService.listInviteHistory("conferenceFullName"));
     }
 
-    protected void fakeLogin() {
+    void fakeLogin() {
         fakeLogin("testUsername");
     }
 
-    protected void fakeLogin(String username) {
+    void fakeLogin(String username) {
         //伪造登录信息
         User userDetails = new User();
         userDetails.setFullName("testFullName");
@@ -144,36 +139,32 @@ class AuthServiceTest{
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     }
 
-    protected User addUser(String username){
+    protected User addUser(String username) {
         String password = "111111a";
         User user = new User(username, encoder.encode(password), "testFullName", "323@d.d", "off", new String[0]);
         userRepository.save(user);
         return user;
     }
 
-    protected Conference addConference(User chair,String ConferenceFullName){
+    protected Conference addConference(User chair, String ConferenceFullName) {
         Date testStartDate = new Date(10);
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
-        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate,"1", chair);
+        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", chair);
         conferenceRepository.save(testConference);
         return testConference;
     }
 
-    protected Conference addConference(User chair,String ConferenceFullName,String topics){
+    protected Conference addConference(User chair, String ConferenceFullName, String topics) {
         Date testStartDate = new Date(10);
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
-        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate,topics, chair);
+        Conference testConference = new Conference("ABB", ConferenceFullName, "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, topics, chair);
         conferenceRepository.save(testConference);
         return testConference;
     }
-
-
-
-
 
 
 }
