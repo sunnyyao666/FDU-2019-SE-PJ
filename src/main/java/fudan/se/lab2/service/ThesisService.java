@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +45,7 @@ public class ThesisService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        File target = new File(new File(new File(request.getSession().getServletContext().getRealPath("/"), "static"), conferenceFullName), user.getUsername());
+        File target = new File(new File(new File(ClassUtils.getDefaultClassLoader().getResource("").getPath(), "static"), conferenceFullName), user.getUsername());
         if (!target.exists()) target.mkdirs();
         StringBuilder realTitle = new StringBuilder(title);
         while (new File(target.getAbsolutePath(), realTitle.toString() + ".pdf").exists()) realTitle.append("(1)");
