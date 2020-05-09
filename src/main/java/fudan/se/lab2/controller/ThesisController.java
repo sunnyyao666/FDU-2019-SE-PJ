@@ -51,8 +51,8 @@ public class ThesisController {
         return ResponseEntity.ok(thesisService.endAudit(request.getConferenceFullName()));
     }
 
-    @GetMapping("/downloadThesis?id={id}")
-    public void downloadThesis(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping("/downloadThesis")
+    public void downloadThesis(@RequestParam Long id, HttpServletRequest request, HttpServletResponse response) {
         thesisService.downloadThesis(id,request,response);
     }
 }
