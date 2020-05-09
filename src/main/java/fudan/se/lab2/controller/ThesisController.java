@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author YHT
  */
@@ -24,8 +22,8 @@ public class ThesisController {
     }
 
     @PostMapping("/submit")
-    public ResponseEntity<?> submitThesis(HttpServletRequest request, @RequestParam("id") Long id, @RequestParam("conferenceFullName") String conferenceFullName, @RequestParam("title") String title, @RequestParam("summary") String summary, @RequestParam("authors") String authors, @RequestParam("topics") String topics, @RequestParam("file") MultipartFile file) {
-        return ResponseEntity.ok(thesisService.submitThesis(request, id, conferenceFullName, title, summary, authors, topics, file));
+    public ResponseEntity<?> submitThesis(@RequestParam("id") Long id, @RequestParam("conferenceFullName") String conferenceFullName, @RequestParam("title") String title, @RequestParam("summary") String summary, @RequestParam("authors") String authors, @RequestParam("topics") String topics, @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(thesisService.submitThesis(id, conferenceFullName, title, summary, authors, topics, file));
     }
 
     @PostMapping("/startAudit")
