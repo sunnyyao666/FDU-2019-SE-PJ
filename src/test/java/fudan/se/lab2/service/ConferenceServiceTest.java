@@ -23,15 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class ConferenceServiceTest {
+class ConferenceServiceTest extends BackendTest {
     @Autowired
     ConferenceService conferenceService;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    ConferenceRepository conferenceRepository;
-    @Autowired
-    PasswordEncoder encoder;
 
     @Test
     @Transactional
@@ -86,9 +80,6 @@ class ConferenceServiceTest {
         assertNotNull(conferenceService.searchConference("testConferenceFullName"));
     }
 
-    void fakeLogin() {
-        fakeLogin("testUsername");
-    }
 
     void fakeLogin(String username) {
         //伪造登录信息
@@ -125,4 +116,5 @@ class ConferenceServiceTest {
         conferenceRepository.save(testConference);
         return testConference;
     }
+
 }

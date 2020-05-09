@@ -6,10 +6,7 @@ import fudan.se.lab2.domain.Conference;
 import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
-import fudan.se.lab2.repository.AuthorityRepository;
-import fudan.se.lab2.repository.ConferenceRepository;
-import fudan.se.lab2.repository.ThesisRepository;
-import fudan.se.lab2.repository.UserRepository;
+import fudan.se.lab2.repository.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class BackendTest {
+
+    @Autowired
+    ThesisRepository thesisRepository;
     @Autowired
     AuthorityRepository authorityRepository;
     @Autowired
@@ -40,7 +40,7 @@ class BackendTest {
     @Autowired
     ConferenceRepository conferenceRepository;
     @Autowired
-    ThesisRepository thesisRepository;
+    PCAuditRepository pcAuditRepository;
     @Autowired
     PasswordEncoder encoder;
 
