@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @author YHT
  */
@@ -46,5 +49,10 @@ public class ThesisController {
     @PostMapping("/endAudit")
     public ResponseEntity<?> endAudit(@RequestBody SearchRequest request) {
         return ResponseEntity.ok(thesisService.endAudit(request.getConferenceFullName()));
+    }
+
+    @GetMapping("/downloadThesis?id={id}")
+    public void downloadThesis(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
+        thesisService.downloadThesis(id,request,response);
     }
 }

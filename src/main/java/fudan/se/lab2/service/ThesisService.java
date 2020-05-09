@@ -7,6 +7,7 @@ import net.sf.json.JSONArray;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,9 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -94,7 +95,7 @@ public class ThesisService {
                 pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
             else
                 for (String topic : topics)
-                pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullNameAndTopicsContaining("PC Member", conferenceFullName, topic));
+                    pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullNameAndTopicsContaining("PC Member", conferenceFullName, topic));
             pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
             Collections.sort(pcMembers);
             if (corresponding(thesis, pcMembers) < 3) {
@@ -212,5 +213,17 @@ public class ThesisService {
         conference.setSubmitting(true);
         conferenceRepository.save(conference);
         return true;
+    }
+
+    public void downloadThesis(Long id, HttpServletRequest request, HttpServletResponse response) {
+        Thesis thesis = thesisRepository.findById(id).get();
+        try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
+             OutputStream outputStream = response.getOutputStream();) {
+            response.setContentType("application/x-download");
+            response.addHeader("Content-Disposition", "attachment;filename=" + id);
+            IOUtils.copy(inputStream, outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
