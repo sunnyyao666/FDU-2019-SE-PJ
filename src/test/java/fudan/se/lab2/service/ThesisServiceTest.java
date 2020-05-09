@@ -1,10 +1,13 @@
 package fudan.se.lab2.service;
 
+import fudan.se.lab2.controller.request.AuditThesisRequest;
+import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.Conference;
+import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
-import fudan.se.lab2.repository.ConferenceRepository;
-import fudan.se.lab2.repository.UserRepository;
+import fudan.se.lab2.repository.*;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONString;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,42 +25,44 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class ThesisServiceTest {
+class ThesisServiceTest extends BackendTest
+{
     @Autowired
     ThesisService thesisService;
+    @Autowired
+    ThesisRepository thesisRepository;
+    @Autowired
+    AuthorityRepository authorityRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
     ConferenceRepository conferenceRepository;
     @Autowired
+    PCAuditRepository pcAuditRepository;
+    @Autowired
     PasswordEncoder encoder;
 
     @Test
     @Transactional
-    void submitThesis() {
-        Date testStartDate = new Date(10);
-        Date testEndDate = new Date(11);
-        Date testReleaseDate = new Date(2);
-        Date testDDLDate = new Date(2);
-        String password = "111111a";
-        User testChair = new User("testChair", encoder.encode(password), "testFullName", "323@d.d", "off", new String[0]);
-        userRepository.save(testChair);
-        Conference testConference = new Conference("ABB", "testConferenceFullName", "Place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1", testChair);
-        conferenceRepository.save(testConference);
-        //添加会议
-        User user = new User("testUsername", encoder.encode("111111a"), "testFullName", "testEmail@t.com", "off", new String[0]);
-        userRepository.save(user);
+    void submitThesis()
+    {
+        User testChair = addUser("testChair");
+        Conference testConference = addConference(testChair, "testConferenceFullName");
+        User user = addUser("testUsername");
         fakeLogin("testUsername");
         File file = new File("src/test/java/fudan/se/lab2/service/test.pdf");
         MultipartFile testFile = null;
-        try {
+        try
+        {
             testFile = new MockMultipartFile("test.pdf", "test.pdf", "pdf", new FileInputStream(file));
-        } catch (IOException e) {
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
         MultipartFile finalTestFile = testFile;
@@ -65,18 +71,107 @@ class ThesisServiceTest {
         testUsers[0] = new User("testFullName1", "323@d.d", "off", new String[0]);
         testUsers[1] = new User("testFullName2", "323@d.d", "off", new String[0]);
         JSONArray jsonarray = JSONArray.fromObject(testUsers);
-        String authors = jsonarray.toString();
 
-        //assertDoesNotThrow(() -> thesisService.submitThesis(-1L,"testConferenceFullName", "title", "summary", authors,"1", finalTestFile));
+        assertDoesNotThrow(() -> thesisService.submitThesis(-1L, "testConferenceFullName", "title", "summary", jsonarray.toString(), "1", finalTestFile));
     }
 
-    private void fakeLogin(String username) {
-        //伪造登录信息
-        User userDetails = new User();
-        userDetails.setFullName("testFullName");
-        userDetails.setUsername(username);
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-    }
+    @Test
+    @Transactional
+    void startAudit1()
+    {
 
+        User testChair = addUser("testChair");
+        Conference testConference = addConference(testChair, "testConferenceFullName", "['1','2','3','4','5']");
+        fakeLogin("testChair");
+        User users[] = new User[5];
+        for (int i = 0; i < 5; i++)
+        {
+            users[i] = addUser("user" + i);
+        }
+        for (int i = 0; i < 5; i++)
+        {
+            addThesis("testConferenceFullName", "title", "summary", users[i], "", "['" + i + "']", String.valueOf(i), "");
+        }
+        User PCmembers[] = new User[3];
+        for (int i = 0; i < 3; i++)
+        {
+            PCmembers[i] = addUser("PC" + i);
+            Authority authority = new Authority("PC Member", PCmembers[i], "testConferenceFullName", "testChair");
+            authority.setTopics("['" + i + "']");
+        }
+        assertDoesNotThrow(() -> thesisService.startAudit1("testConferenceFullName"));
+
+    }
+//
+//    @Test
+//    @Transactional
+//
+//    void startAudit2(){
+//
+//        User testChair = addUser("testChair");
+//        Conference testConference =addConference(testChair,"testConferenceFullName", "['1','2','3','4','5']" );
+//        fakeLogin("testChair");
+//        User users[]=new User[5];
+//        for(int i=0;i<5;i++){
+//            users[i]=addUser("user"+i);
+//        }
+//        for(int i=0;i<5;i++) {
+//            addThesis("testConferenceFullName", "title", "summary",users[i],"","['"+i+"']",String.valueOf(i),"" );
+//        }
+//        User PCmembers[]=new User[3];
+//        for(int i=0;i<3;i++){
+//            PCmembers[i]=addUser("PC"+i);
+//            Authority authority=new Authority("PC Member", PCmembers[i], "testConferenceFullName", "testChair");
+//            authority.setTopics("['"+i+"']");
+//        }
+//        assertDoesNotThrow(() -> thesisService.startAudit2("testConferenceFullName"));
+//
+//    }
+
+    @Test
+    @Transactional
+    void testAudit()
+    {
+
+        String conferenceFullName="testConferenceFullName";
+        User testChair = addUser("testChair");
+        Conference testConference = addConference(testChair, conferenceFullName, "[\"1\",\"2\",\"3\",\"4\",\"5\"]");
+        fakeLogin("testChair");
+        User users[] = new User[5];
+        for (int i = 0; i < 5; i++)
+        {
+            users[i] = addUser("user" + i);
+        }
+        for (int i = 0; i < 5; i++)
+        {
+            addThesis(conferenceFullName, "title", "summary", users[i], "", "[\"" + i +"\",\""+((i+1)%5)+ "\"]", String.valueOf(i), "");
+        }
+        int PCMnumber=6;
+        User PCmembers[] = new User[PCMnumber];
+        for (int i = 0; i < PCMnumber; i++)
+        {
+            PCmembers[i] = addUser("PC" + i);
+            Authority authority = new Authority("PC Member", PCmembers[i], conferenceFullName, "testChair");
+            authority.setTopics("[\"" + i + "\"]");
+            authorityRepository.save(authority);
+        }
+        assertEquals( thesisService.startAudit2(conferenceFullName),"OK");
+        for (int i = 0; i < PCMnumber; i++)
+        {
+            fakeLogin(PCmembers[i].getUsername());
+            Set<Thesis> theses = thesisService.pcGetTheses(conferenceFullName);
+            System.out.println(i+" "+theses.size());
+            for (Thesis thesis : theses)
+            {
+                AuditThesisRequest request = new AuditThesisRequest();
+                request.setConferenceFullName(conferenceFullName);
+                request.setComment("comment");
+                request.setConfidence("1");
+                request.setScore(1);
+                request.setThesisID(thesis.getId());
+                assertDoesNotThrow(()->thesisService.auditThesis(request));
+            }
+        }
+        assertTrue(thesisService.endAudit(conferenceFullName));
+    }
 }

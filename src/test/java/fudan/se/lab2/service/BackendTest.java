@@ -1,90 +1,50 @@
 package fudan.se.lab2.service;
 
-import fudan.se.lab2.controller.request.ApplyConferenceRequest;
+import fudan.se.lab2.controller.request.RegisterRequest;
+import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.Conference;
 import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
-import fudan.se.lab2.exception.ConferenceNameDuplicatedException;
+import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
+import fudan.se.lab2.repository.AuthorityRepository;
 import fudan.se.lab2.repository.ConferenceRepository;
+import fudan.se.lab2.repository.ThesisRepository;
 import fudan.se.lab2.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
+
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class ConferenceServiceTest {
+class BackendTest {
     @Autowired
-    ConferenceService conferenceService;
+    AuthorityRepository authorityRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
     ConferenceRepository conferenceRepository;
     @Autowired
+    ThesisRepository thesisRepository;
+    @Autowired
     PasswordEncoder encoder;
 
-    @Test
-    @Transactional
-    void applyConference() {
-        User testChair =addUser("testChair");
-        fakeLogin("testChair");
-        Conference testConference = addConference(testChair, "fullName");
-        conferenceRepository.save(testConference);
-        Date testStartDate = new Date(10);
-        Date testEndDate = new Date(11);
-        Date testReleaseDate = new Date(2);
-        Date testDDLDate = new Date(2);
-        ApplyConferenceRequest testRequest1 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1");
-        assertDoesNotThrow(() -> conferenceService.applyConference(testRequest1));
-        ApplyConferenceRequest testRequest2 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1");
-        assertThrows(ConferenceNameDuplicatedException.class, () -> conferenceService.applyConference(testRequest2));
-    }
 
-    @Test
-    @Transactional
-    void listConferences() {
-        fakeLogin();
-
-        assertDoesNotThrow(() -> conferenceService.listConferences("user"));
-        assertDoesNotThrow(() -> conferenceService.listConferences("contribution"));
-    }
-
-    @Test
-    @Transactional
-    void changeSubmissionState() {
-        User testChair = addUser("testChair");
-        addConference(testChair,"testConferenceFullName");
-        assertDoesNotThrow(() -> conferenceService.changeSubmissionState("testConferenceFullName", true));
-    }
-
-    @Test
-    @Transactional
-    void auditConferenceApplication() {
-        User testChair =addUser("testChair");
-        addConference(testChair, "testConferenceFullName");
-        assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("testConferenceFullName", false));
-        assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("testConferenceFullName", true));
-        assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("nameThatNoExist", false));
-        assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("nameThatNoExist", true));
-    }
-
-    @Test
-    @Transactional
-    void searchConference() {
-        User testChair =addUser("testChair");
-        addConference(testChair, "testConferenceFullName");
-        assertNotNull(conferenceService.searchConference("testConferenceFullName"));
-    }
 
     protected void fakeLogin() {
         fakeLogin("testUsername");
@@ -126,6 +86,11 @@ class ConferenceServiceTest {
         return testConference;
     }
 
+    protected Thesis addThesis(String conferenceFullName,String title,String summary,User user,String authors,String topics,String fileName,String thesisPath){
+        Thesis thesis = new Thesis(conferenceFullName, title, summary, user, authors, topics, fileName, thesisPath);
+        thesisRepository.save(thesis);
+        return thesis;
+    }
 
 
 
