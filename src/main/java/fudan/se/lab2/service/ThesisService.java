@@ -167,6 +167,7 @@ public class ThesisService {
 //            if (isAuthor) continue;
             PCAudit pcAudit = new PCAudit(pcMember, thesis);
             pcAuditRepository.save(pcAudit);
+            pcMember.getPCAudits().add(pcAudit);
             n++;
             if (n == 3) return 3;
         }
@@ -180,7 +181,9 @@ public class ThesisService {
         User user = userRepository.findByUsername(userDetails.getUsername());
         Authority authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("PC Member", user, conferenceFullName);
         if (authority == null) throw new BadCredentialsException("Not authorized.");
-        for (PCAudit pcAudit : authority.getPCAudits()) theses.add(pcAudit.getThesis());
+        for (PCAudit pcAudit : authority.getPCAudits()) {
+            theses.add(pcAudit.getThesis());
+        }
         return theses;
     }
 

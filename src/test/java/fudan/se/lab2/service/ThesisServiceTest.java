@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,18 +37,6 @@ class ThesisServiceTest extends BackendTest
 {
     @Autowired
     ThesisService thesisService;
-    @Autowired
-    ThesisRepository thesisRepository;
-    @Autowired
-    AuthorityRepository authorityRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    ConferenceRepository conferenceRepository;
-    @Autowired
-    PCAuditRepository pcAuditRepository;
-    @Autowired
-    PasswordEncoder encoder;
 
     @Test
     @Transactional
@@ -71,8 +61,10 @@ class ThesisServiceTest extends BackendTest
         testUsers[0] = new User("testFullName1", "323@d.d", "off", new String[0]);
         testUsers[1] = new User("testFullName2", "323@d.d", "off", new String[0]);
         JSONArray jsonarray = JSONArray.fromObject(testUsers);
-
-        assertDoesNotThrow(() -> thesisService.submitThesis(-1L, "testConferenceFullName", "title", "summary", jsonarray.toString(), "1", finalTestFile));
+        Long id;
+        assertNotNull( id=thesisService.submitThesis(-1L, "testConferenceFullName", "title", "summary", jsonarray.toString(), "1", finalTestFile).getId()
+        );
+        assertNotNull(thesisService.submitThesis(id, "testConferenceFullName", "title", "summary", jsonarray.toString(), "1", finalTestFile));
     }
 
     @Test
@@ -98,8 +90,10 @@ class ThesisServiceTest extends BackendTest
             PCmembers[i] = addUser("PC" + i);
             Authority authority = new Authority("PC Member", PCmembers[i], "testConferenceFullName", "testChair");
             authority.setTopics("['" + i + "']");
+            authorityRepository.save(authority);
+
         }
-        assertDoesNotThrow(() -> thesisService.startAudit1("testConferenceFullName"));
+        assertEquals( thesisService.startAudit1("testConferenceFullName"),"OK");
 
     }
 //
@@ -173,5 +167,14 @@ class ThesisServiceTest extends BackendTest
             }
         }
         assertTrue(thesisService.endAudit(conferenceFullName));
+    }
+
+    @Test
+    @Autowired
+    void  downloadThesis(){
+        HttpServletResponse response;
+
+
+
     }
 }
