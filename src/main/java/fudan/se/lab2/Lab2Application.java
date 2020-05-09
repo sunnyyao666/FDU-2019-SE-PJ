@@ -55,8 +55,11 @@ public class Lab2Application {
                 Conference conference = new Conference("24", "23456", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), JSONArray.fromObject(topic).toString(), userRepository.findByUsername("11111"));
                 conference.setApplying(false);
                 conference.setValid(true);
+                conference.setSubmitting(true);
                 conferenceRepository.save(conference);
                 authorityRepository.save(new Authority("Chair", userRepository.findByUsername("11111"), "23456", null));
+                authorityRepository.save(new Authority("PC Member", userRepository.findByUsername("22222"), "23456", "11111"));
+                authorityRepository.save(new Authority("PC Member", userRepository.findByUsername("33333"), "23456", "11111"));
             }
         };
     }
