@@ -33,6 +33,9 @@ public class PCAudit implements Serializable {
     private String confidence;
     private boolean audited;
 
+    public PCAudit(){
+    }
+
     public PCAudit(Authority authority, Thesis thesis) {
         this.authority = authority;
         this.thesis = thesis;
