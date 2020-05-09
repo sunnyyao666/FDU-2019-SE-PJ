@@ -215,7 +215,7 @@ public class ThesisService {
         return true;
     }
 
-    public void downloadThesis(Long id, HttpServletRequest request, HttpServletResponse response) {
+    public void downloadThesis(Long id, HttpServletRequest request, HttpServletResponse response)throws BadCredentialsException {
         Thesis thesis = thesisRepository.findById(id).get();
         try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
              OutputStream outputStream = response.getOutputStream();) {
@@ -223,7 +223,7 @@ public class ThesisService {
             response.addHeader("Content-Disposition", "attachment;filename=" + id);
             IOUtils.copy(inputStream, outputStream);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new BadCredentialsException("Bad downloading!");
         }
     }
 }
