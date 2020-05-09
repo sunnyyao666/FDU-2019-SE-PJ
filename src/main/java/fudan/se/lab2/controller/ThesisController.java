@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -52,7 +51,7 @@ public class ThesisController {
     }
 
     @GetMapping("/downloadThesis")
-    public void downloadThesis(@RequestParam Long id, HttpServletRequest request, HttpServletResponse response) {
-        thesisService.downloadThesis(id,request,response);
+    public void downloadThesis(@RequestParam Long id, HttpServletResponse response) {
+        thesisService.downloadThesis(id, response);
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.*;
@@ -215,12 +214,12 @@ public class ThesisService {
         return true;
     }
 
-    public void downloadThesis(Long id, HttpServletRequest request, HttpServletResponse response)throws BadCredentialsException {
+    public void downloadThesis(Long id, HttpServletResponse response)throws BadCredentialsException {
         Thesis thesis = thesisRepository.findById(id).get();
         try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
              OutputStream outputStream = response.getOutputStream();) {
-            response.setContentType("application/x-download");
-            response.addHeader("Content-Disposition", "attachment;filename=" + id);
+            response.setContentType("application/octet-stream;charset=UTF-8");
+            response.addHeader("Content-Disposition", "attachment;filename=" + thesis.getFileName());
             IOUtils.copy(inputStream, outputStream);
         } catch (Exception e) {
             throw new BadCredentialsException("Bad downloading!");
