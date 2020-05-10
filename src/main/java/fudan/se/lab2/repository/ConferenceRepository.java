@@ -15,5 +15,6 @@ public interface ConferenceRepository extends CrudRepository<Conference, Long> {
 
     Set<Conference> findAllByApplying(boolean applying);
 
+    Set<Conference> findAllByValid(boolean valid);    
     Set<Conference> findAllByValidAndSubmittingAndAuditing(boolean valid, boolean submitting, boolean auditing);
 }
