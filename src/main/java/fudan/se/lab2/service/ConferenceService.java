@@ -45,7 +45,8 @@ public class ConferenceService {
 
     public Set<Conference> listConferences(String text) {
         if ("admin".equals(text)) return conferenceRepository.findAllByApplying(true);
-        else if ("submission".equals(text)) return conferenceRepository.findAllByValid(true);
+        else if ("submission".equals(text))
+            return conferenceRepository.findAllByValidAndSubmittingAndAuditing(true, true, false);
         return null;
     }
 
