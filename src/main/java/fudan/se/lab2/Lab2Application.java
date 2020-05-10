@@ -1,19 +1,16 @@
 package fudan.se.lab2;
 
 import fudan.se.lab2.domain.Authority;
-import fudan.se.lab2.domain.Conference;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.repository.AuthorityRepository;
 import fudan.se.lab2.repository.ConferenceRepository;
 import fudan.se.lab2.repository.UserRepository;
-import net.sf.json.JSONArray;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Date;
 
 /**
  * @author YHT
@@ -45,20 +42,6 @@ public class Lab2Application {
                     userRepository.save(admin);
                     authorityRepository.save(adminAuthority);
                 }
-                userRepository.save(new User("11111", passwordEncoder.encode("123456"), "Zhang Yi", "1@163.com", "1", region));
-                userRepository.save(new User("22222", passwordEncoder.encode("123456"), "Zhang Er", "2@163.com", "2", region));
-                userRepository.save(new User("33333", passwordEncoder.encode("123456"), "Zhang San", "3@163.com", "3", region));
-                userRepository.save(new User("44444", passwordEncoder.encode("123456"), "Zhang Si", "4@163.com", "4", region));
-                userRepository.save(new User("55555", passwordEncoder.encode("123456"), "Zhang Wu", "5@163.com", "5", region));
-                String[] topic = {"1"};
-                conferenceRepository.save(new Conference("12", "12345", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), JSONArray.fromObject(topic).toString(), userRepository.findByUsername("11111")));
-                Conference conference = new Conference("24", "23456", "1", new Date(120, 4, 7), new Date(120, 4, 7), new Date(120, 5, 7), new Date(120, 5, 10), JSONArray.fromObject(topic).toString(), userRepository.findByUsername("11111"));
-                conference.setApplying(false);
-                conference.setValid(true);
-                conference.setSubmitting(true);
-                conferenceRepository.save(conference);
-                authorityRepository.save(new Authority("Chair", userRepository.findByUsername("11111"), "12345", null));
-                authorityRepository.save(new Authority("Chair", userRepository.findByUsername("11111"), "23456", null));
             }
         };
     }
