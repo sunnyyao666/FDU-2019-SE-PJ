@@ -180,6 +180,8 @@ public class ThesisService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
         Authority authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("PC Member", user, conferenceFullName);
+        if (authority == null)
+            authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("Chair", user, conferenceFullName);
         if (authority == null) throw new BadCredentialsException("Not authorized.");
         for (PCAudit pcAudit : authority.getPCAudits()) theses.add(pcAudit.getThesis());
         return theses;
@@ -190,6 +192,8 @@ public class ThesisService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
         Authority authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("PC Member", user, request.getConferenceFullName());
+        if (authority == null)
+            authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("Chair", user, request.getConferenceFullName());
         if (authority == null) throw new BadCredentialsException("Not authorized.");
         PCAudit pcAudit = pcAuditRepository.findByAuthorityAndThesisID(authority, request.getThesisID());
         if (pcAudit == null) throw new BadCredentialsException("Bad Operation.");
