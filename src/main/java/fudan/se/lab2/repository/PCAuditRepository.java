@@ -16,8 +16,6 @@ import java.util.Set;
 public interface PCAuditRepository extends CrudRepository<PCAudit, Long> {
     PCAudit findByAuthorityAndThesisID(Authority authority, Long thesisID);
 
-    PCAudit findByAuthorityAndThesis(Authority authority, Thesis thesis);
-
     Set<PCAudit> findAllByAuthority_ConferenceFullName(String conferenceFullName);
 
     void deleteAllByAuthority_ConferenceFullName(String conferenceFullName);

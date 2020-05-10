@@ -191,11 +191,7 @@ public class ThesisService {
         User user = userRepository.findByUsername(userDetails.getUsername());
         Authority authority = authorityRepository.findByAuthorityAndUserAndConferenceFullName("PC Member", user, request.getConferenceFullName());
         if (authority == null) throw new BadCredentialsException("Not authorized.");
-        Thesis thesis;
-        if (thesisRepository.findById(request.getThesisID()).isPresent())
-            thesis = thesisRepository.findById(request.getThesisID()).get();
-        else throw new BadCredentialsException("No thesis.");
-        PCAudit pcAudit = pcAuditRepository.findByAuthorityAndThesis(authority, thesis);
+        PCAudit pcAudit = pcAuditRepository.findByAuthorityAndThesisID(authority, request.getThesisID());
         if (pcAudit == null) throw new BadCredentialsException("Bad Operation.");
         pcAudit.setScore(request.getScore());
         pcAudit.setComment(request.getComment());
