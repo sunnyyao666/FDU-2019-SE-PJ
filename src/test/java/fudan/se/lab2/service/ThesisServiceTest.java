@@ -77,7 +77,7 @@ class ThesisServiceTest extends BackendTest {
 
         }
 
-        assertEquals( thesisService.startAudit1("testConferenceFullName"),"OK");
+        assertEquals( thesisService.startAudit2("testConferenceFullName"),"OK");
     }
 
     @Test
@@ -88,24 +88,26 @@ class ThesisServiceTest extends BackendTest {
         Conference testConference = addConference(testChair, conferenceFullName, "[\"1\",\"2\",\"3\",\"4\",\"5\"]");
         fakeLogin("testChair");
         User users[] = new User[5];
-        for (int i = 0; i < 5; i++) users[i] = addUser("user" + i);
-        for (int i = 0; i < 5; i++)
-            addThesis(conferenceFullName, "title", "summary", users[i], "", "[\"" + i + "\",\"" + ((i + 1) % 5) + "\"]", String.valueOf(i), "");
+        for (int i = 0; i < 3; i++) users[i] = addUser("user" + i);
+        for (int i = 0; i < 3; i++)
+            addThesis(conferenceFullName, "title", "summary", users[i], "", "[\"" + i +"\"]", String.valueOf(i), "");
         User PCMembers[] = new User[6];
+        Authority PCAuthority[]=new Authority[6];
         for (int i = 0; i < 6; i++) {
             PCMembers[i] = addUser("PC" + i);
-            Authority authority = new Authority("PC Member", PCMembers[i], conferenceFullName, "testChair");
-            authority.setTopics("[\"" + i + "\"]");
-            authorityRepository.save(authority);
+            PCAuthority[i]=new Authority("PC Member", PCMembers[i], conferenceFullName, "testChair");
+            PCAuthority[i].setTopics("[\"" + i + "\"]");
+            authorityRepository.save(PCAuthority[i]);
         }
 
-        assertEquals(thesisService.startAudit2(conferenceFullName), "OK");
+        assertEquals(thesisService.startAudit1(conferenceFullName), "OK");
 
         for (int i = 0; i < 6; i++) {
             fakeLogin(PCMembers[i].getUsername());
             Set<Thesis> theses = thesisService.pcGetTheses(conferenceFullName);
             System.out.println(i + " " + theses.size());
             for (Thesis thesis : theses) {
+                System.out.println(PCMembers[i].getUsername()+" thesisTopic"+thesis.getTopics()+" pcTopic"+PCAuthority[i].getTopics());
                 AuditThesisRequest request = new AuditThesisRequest();
                 request.setConferenceFullName(conferenceFullName);
                 request.setComment("comment");
