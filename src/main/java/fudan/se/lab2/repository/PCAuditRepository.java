@@ -3,6 +3,7 @@ package fudan.se.lab2.repository;
 
 import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.PCAudit;
+import fudan.se.lab2.domain.Thesis;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,8 @@ import java.util.Set;
 @Repository
 public interface PCAuditRepository extends CrudRepository<PCAudit, Long> {
     PCAudit findByAuthorityAndThesisID(Authority authority, Long thesisID);
+
+    PCAudit findByAuthorityAndThesis(Authority authority, Thesis thesis);
 
     Set<PCAudit> findAllByAuthority_ConferenceFullName(String conferenceFullName);
 
