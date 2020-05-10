@@ -19,6 +19,8 @@ public class PCAudit implements Serializable {
     @JsonIgnore
     private Authority authority;
 
+    private String username;
+
     @ManyToOne
     @JsonIgnore
     private Thesis thesis;
@@ -33,11 +35,12 @@ public class PCAudit implements Serializable {
     private String confidence;
     private boolean audited;
 
-    public PCAudit(){
+    public PCAudit() {
     }
 
     public PCAudit(Authority authority, Thesis thesis) {
         this.authority = authority;
+        this.username = authority.getUsername();
         this.thesis = thesis;
         this.thesisID = thesis.getId();
         this.audited = false;
@@ -49,6 +52,11 @@ public class PCAudit implements Serializable {
 
     public void setAuthority(Authority authority) {
         this.authority = authority;
+        this.username = authority.getUsername();
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public Thesis getThesis() {
