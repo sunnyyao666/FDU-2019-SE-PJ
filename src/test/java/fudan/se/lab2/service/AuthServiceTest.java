@@ -3,38 +3,24 @@ package fudan.se.lab2.service;
 import fudan.se.lab2.controller.request.RegisterRequest;
 import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.Conference;
-import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
-import fudan.se.lab2.repository.AuthorityRepository;
-import fudan.se.lab2.repository.ConferenceRepository;
-import fudan.se.lab2.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
-
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-
-
-
-class AuthServiceTest extends BackendTest{
+class AuthServiceTest extends BackendTest {
     @Autowired
     AuthService authService;
 
@@ -44,6 +30,7 @@ class AuthServiceTest extends BackendTest{
         String password = "111111a";
         User user = new User("testUsername", encoder.encode(password), "testFullName", "testEmail@t.com", "off", new String[0]);
         userRepository.save(user);
+
         assertThrows(UsernameNotFoundException.class, () -> authService.login("testUsername1", password));
         assertNotNull(authService.login("testUsername", password));
         assertThrows(BadCredentialsException.class, () -> authService.login("testUsername", "111112a"));
@@ -57,6 +44,7 @@ class AuthServiceTest extends BackendTest{
         userRepository.save(user);
         RegisterRequest testRegister1 = new RegisterRequest("testUsername", "password", "testFullName", "testEmail@t.com", "off", new String[0]);
         RegisterRequest testRegister2 = new RegisterRequest("testUsername1", "password", "testFullName", "testEmail@t.com", "off", new String[0]);
+
         assertThrows(UsernameHasBeenRegisteredException.class, () -> authService.register(testRegister1));
         assertNotNull(authService.register(testRegister2));
     }
@@ -77,6 +65,7 @@ class AuthServiceTest extends BackendTest{
         authorityRepository.save(new Authority("Chair", testChair, "testConferenceFullName", null));
         addUser("testUsername");
         fakeLogin("testChair");
+
         assertTrue(authService.invitePCMember("testUsername", "testConferenceFullName"));
     }
 
@@ -87,9 +76,12 @@ class AuthServiceTest extends BackendTest{
         addConference(testChair, "testConferenceFullName");
         authorityRepository.save(new Authority("Chair", testChair, "testConferenceFullName", null));
         addUser("testUsername");
+
         assertNotNull(authService.searchUsers("User", "testConferenceFullName"));
+
         fakeLogin("testChair");
         authService.invitePCMember("testUsername", "testConferenceFullName");
+
         assertTrue(authService.searchUsers("testUsername", "testConferenceFullName").isEmpty());
     }
 
@@ -100,8 +92,8 @@ class AuthServiceTest extends BackendTest{
         Conference testConference = addConference(testChair, "testConferenceFullName");
         User user = addUser("testUsername");
         authorityRepository.save(new Authority("Undetermined PC Member", user, "testConferenceFullName", "testChair"));
-
         fakeLogin();
+
         assertDoesNotThrow(() -> authService.auditPCInvitationApplication("testConferenceFullName", "1"));
 
         authorityRepository.save(new Authority("Undetermined PC Member", user, "testConferenceFullName", "testChair"));
@@ -118,8 +110,7 @@ class AuthServiceTest extends BackendTest{
         fakeLogin("chair");
         authService.invitePCMember("user1", "conferenceFullName");
         authService.invitePCMember("user2", "conferenceFullName");
+
         assertNotNull(authService.listInviteHistory("conferenceFullName"));
     }
-
-
 }

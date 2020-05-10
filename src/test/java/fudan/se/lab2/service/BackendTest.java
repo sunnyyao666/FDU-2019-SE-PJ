@@ -1,36 +1,23 @@
 package fudan.se.lab2.service;
 
-import fudan.se.lab2.controller.request.RegisterRequest;
-import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.Conference;
 import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
-import fudan.se.lab2.exception.UsernameHasBeenRegisteredException;
 import fudan.se.lab2.repository.*;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.transaction.Transactional;
-
 import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class BackendTest {
-
     @Autowired
     ThesisRepository thesisRepository;
     @Autowired
@@ -44,7 +31,7 @@ class BackendTest {
     @Autowired
     PasswordEncoder encoder;
 
-    protected void fakeLogin() {
+    void fakeLogin() {
         fakeLogin("testUsername");
     }
 

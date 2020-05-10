@@ -2,18 +2,12 @@ package fudan.se.lab2.service;
 
 import fudan.se.lab2.controller.request.ApplyConferenceRequest;
 import fudan.se.lab2.domain.Conference;
-import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
 import fudan.se.lab2.exception.ConferenceNameDuplicatedException;
-import fudan.se.lab2.repository.ConferenceRepository;
-import fudan.se.lab2.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
@@ -38,6 +32,7 @@ class ConferenceServiceTest extends BackendTest {
         Date testEndDate = new Date(11);
         Date testReleaseDate = new Date(2);
         Date testDDLDate = new Date(2);
+
         ApplyConferenceRequest testRequest1 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1");
         assertDoesNotThrow(() -> conferenceService.applyConference(testRequest1));
         ApplyConferenceRequest testRequest2 = new ApplyConferenceRequest("abb", "testConferenceFullName", "place", testStartDate, testEndDate, testReleaseDate, testDDLDate, "1");
@@ -58,6 +53,7 @@ class ConferenceServiceTest extends BackendTest {
     void changeSubmissionState() {
         User testChair = addUser("testChair");
         addConference(testChair, "testConferenceFullName");
+
         assertDoesNotThrow(() -> conferenceService.changeSubmissionState("testConferenceFullName", true));
     }
 
@@ -66,6 +62,7 @@ class ConferenceServiceTest extends BackendTest {
     void auditConferenceApplication() {
         User testChair = addUser("testChair");
         addConference(testChair, "testConferenceFullName");
+
         assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("testConferenceFullName", false));
         assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("testConferenceFullName", true));
         assertDoesNotThrow(() -> conferenceService.auditConferenceApplication("nameThatNoExist", false));
@@ -77,7 +74,7 @@ class ConferenceServiceTest extends BackendTest {
     void searchConference() {
         User testChair = addUser("testChair");
         addConference(testChair, "testConferenceFullName");
+
         assertNotNull(conferenceService.searchConference("testConferenceFullName"));
     }
-
 }

@@ -5,19 +5,16 @@ import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.Conference;
 import fudan.se.lab2.domain.Thesis;
 import fudan.se.lab2.domain.User;
-import fudan.se.lab2.repository.*;
 import net.sf.json.JSONArray;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,7 +50,7 @@ class ThesisServiceTest extends BackendTest {
         testUsers[1] = new User("testFullName2", "323@d.d", "off", new String[0]);
         JSONArray jsonarray = JSONArray.fromObject(testUsers);
         Long id;
-        assertNotNull( id=thesisService.submitThesis(-1L, "testConferenceFullName", "title", "summary", jsonarray.toString(), "1", finalTestFile).getId()
+        assertNotNull(id = thesisService.submitThesis(-1L, "testConferenceFullName", "title", "summary", jsonarray.toString(), "1", finalTestFile).getId()
         );
         assertNotNull(thesisService.submitThesis(id, "testConferenceFullName", "title", "summary", jsonarray.toString(), "1", finalTestFile));
     }
@@ -74,10 +71,9 @@ class ThesisServiceTest extends BackendTest {
             Authority authority = new Authority("PC Member", PCMembers[i], "testConferenceFullName", "testChair");
             authority.setTopics("['" + i + "']");
             authorityRepository.save(authority);
-
         }
 
-        assertEquals( thesisService.startAudit2("testConferenceFullName"),"OK");
+        assertEquals(thesisService.startAudit2("testConferenceFullName"), "OK");
     }
 
     @Test
@@ -90,12 +86,12 @@ class ThesisServiceTest extends BackendTest {
         User users[] = new User[5];
         for (int i = 0; i < 3; i++) users[i] = addUser("user" + i);
         for (int i = 0; i < 3; i++)
-            addThesis(conferenceFullName, "title", "summary", users[i], "", "[\"" + i +"\"]", String.valueOf(i), "");
+            addThesis(conferenceFullName, "title", "summary", users[i], "", "[\"" + i + "\"]", String.valueOf(i), "");
         User PCMembers[] = new User[6];
-        Authority PCAuthority[]=new Authority[6];
+        Authority PCAuthority[] = new Authority[6];
         for (int i = 0; i < 6; i++) {
             PCMembers[i] = addUser("PC" + i);
-            PCAuthority[i]=new Authority("PC Member", PCMembers[i], conferenceFullName, "testChair");
+            PCAuthority[i] = new Authority("PC Member", PCMembers[i], conferenceFullName, "testChair");
             PCAuthority[i].setTopics("[\"" + i + "\"]");
             authorityRepository.save(PCAuthority[i]);
         }
@@ -107,7 +103,7 @@ class ThesisServiceTest extends BackendTest {
             Set<Thesis> theses = thesisService.pcGetTheses(conferenceFullName);
             System.out.println(i + " " + theses.size());
             for (Thesis thesis : theses) {
-                System.out.println(PCMembers[i].getUsername()+" thesisTopic"+thesis.getTopics()+" pcTopic"+PCAuthority[i].getTopics());
+                System.out.println(PCMembers[i].getUsername() + " thesisTopic" + thesis.getTopics() + " pcTopic" + PCAuthority[i].getTopics());
                 AuditThesisRequest request = new AuditThesisRequest();
                 request.setConferenceFullName(conferenceFullName);
                 request.setComment("comment");
@@ -124,9 +120,8 @@ class ThesisServiceTest extends BackendTest {
 
     @Test
     @Autowired
-    void  downloadThesis(){
+    void downloadThesis() {
         HttpServletResponse response;
-
 
 
     }

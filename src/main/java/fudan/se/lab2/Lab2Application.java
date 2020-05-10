@@ -59,8 +59,6 @@ public class Lab2Application {
                 conferenceRepository.save(conference);
                 authorityRepository.save(new Authority("Chair", userRepository.findByUsername("11111"), "12345", null));
                 authorityRepository.save(new Authority("Chair", userRepository.findByUsername("11111"), "23456", null));
-                authorityRepository.save(new Authority("PC Member", userRepository.findByUsername("22222"), "23456", "11111"));
-                authorityRepository.save(new Authority("PC Member", userRepository.findByUsername("33333"), "23456", "11111"));
             }
         };
     }
