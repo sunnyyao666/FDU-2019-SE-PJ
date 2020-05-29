@@ -34,6 +34,8 @@ public class PCAudit implements Serializable {
 
     private String confidence;
     private boolean audited;
+    private boolean rechanged1;
+    private boolean rechanged2;
 
     public PCAudit() {
     }
@@ -44,6 +46,8 @@ public class PCAudit implements Serializable {
         this.thesis = thesis;
         this.thesisID = thesis.getId();
         this.audited = false;
+        this.rechanged1 = false;
+        this.rechanged2 = false;
     }
 
     public Authority getAuthority() {
@@ -102,5 +106,21 @@ public class PCAudit implements Serializable {
 
     public void setAudited(boolean auditing) {
         this.audited = auditing;
+    }
+
+    public boolean isRechanged1() {
+        return rechanged1;
+    }
+
+    public void setRechanged1(boolean rechanged1) {
+        this.rechanged1 = rechanged1;
+    }
+
+    public boolean isRechanged2() {
+        return rechanged2;
+    }
+
+    public void setRechanged2(boolean rechanged2) {
+        this.rechanged2 = rechanged2;
     }
 }

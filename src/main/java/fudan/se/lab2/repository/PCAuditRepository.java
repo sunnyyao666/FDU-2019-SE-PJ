@@ -17,6 +17,8 @@ public interface PCAuditRepository extends CrudRepository<PCAudit, Long> {
 
     Set<PCAudit> findAllByAuthority_ConferenceFullName(String conferenceFullName);
 
+    Set<PCAudit> findAllByThesisID(Long thesisID);
+
     void deleteAllByAuthority_ConferenceFullName(String conferenceFullName);
 
     void deleteAllByThesisID(Long thesisID);

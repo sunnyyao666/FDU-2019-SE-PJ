@@ -9,6 +9,7 @@ public class AuditThesisRequest {
     private int score;
     private String comment;
     private String confidence;
+    private int stage;
 
     public AuditThesisRequest() {
     }
@@ -51,5 +52,13 @@ public class AuditThesisRequest {
 
     public void setConfidence(String confidence) {
         this.confidence = confidence;
+    }
+
+    public int getStage() {
+        return stage;
+    }
+
+    public void setStage(int stage) {
+        this.stage = stage;
     }
 }

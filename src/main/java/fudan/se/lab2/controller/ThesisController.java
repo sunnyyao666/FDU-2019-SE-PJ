@@ -54,4 +54,14 @@ public class ThesisController {
     public void downloadThesis(@RequestParam Long id, HttpServletResponse response) {
         thesisService.downloadThesis(id, response);
     }
+
+    @PostMapping("/releaseAcceptance1")
+    public ResponseEntity<?> releaseAcceptance1(@RequestBody SearchRequest request) {
+        return ResponseEntity.ok(thesisService.releaseAcceptance1(request.getConferenceFullName()));
+    }
+
+    @PostMapping("/releaseAcceptance2")
+    public ResponseEntity<?> releaseAcceptance2(@RequestBody SearchRequest request) {
+        return ResponseEntity.ok(thesisService.releaseAcceptance2(request.getConferenceFullName()));
+    }
 }

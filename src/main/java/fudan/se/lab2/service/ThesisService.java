@@ -201,6 +201,20 @@ public class ThesisService {
         pcAudit.setComment(request.getComment());
         pcAudit.setConfidence(request.getConfidence());
         pcAudit.setAudited(true);
+        if (request.getStage() == 1) {
+            pcAudit.setRechanged1(true);
+            Set<PCAudit> pcAudits = pcAuditRepository.findAllByThesisID(request.getThesisID());
+            boolean accepted = true;
+            for (PCAudit pcAudit1 : pcAudits)
+                if ((!pcAudit1.isRechanged1()) || (pcAudit1.getScore() <= -1)) {
+                    accepted = false;
+                    break;
+                }
+            if (accepted) for (PCAudit pcAudit1 : pcAudits) {
+                pcAudit1.setRechanged2(true);
+                pcAuditRepository.save(pcAudit1);
+            }
+        } else if (request.getStage() == 2) pcAudit.setRechanged2(true);
         pcAuditRepository.save(pcAudit);
         return pcAudit;
     }
@@ -229,5 +243,27 @@ public class ThesisService {
         } catch (Exception e) {
             throw new BadCredentialsException("Bad downloading!");
         }
+    }
+
+    public boolean releaseAcceptance1(String conferenceFullName) {
+        Set<PCAudit> pcAudits = pcAuditRepository.findAllByAuthority_ConferenceFullName(conferenceFullName);
+        boolean rechanged1 = true;
+        for (PCAudit pcAudit : pcAudits)
+            if (!pcAudit.isRechanged1()) {
+                rechanged1 = false;
+                break;
+            }
+        return rechanged1;
+    }
+
+    public boolean releaseAcceptance2(String conferenceFullName) {
+        Set<PCAudit> pcAudits = pcAuditRepository.findAllByAuthority_ConferenceFullName(conferenceFullName);
+        boolean rechanged2 = true;
+        for (PCAudit pcAudit : pcAudits)
+            if (!pcAudit.isRechanged2()) {
+                rechanged2 = false;
+                break;
+            }
+        return rechanged2;
     }
 }
