@@ -29,14 +29,16 @@ public class ThesisService {
     private ConferenceRepository conferenceRepository;
     private ThesisRepository thesisRepository;
     private PCAuditRepository pcAuditRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    public ThesisService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, ThesisRepository thesisRepository, PCAuditRepository pcAuditRepository) {
+    public ThesisService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, ThesisRepository thesisRepository, PCAuditRepository pcAuditRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
         this.conferenceRepository = conferenceRepository;
         this.thesisRepository = thesisRepository;
         this.pcAuditRepository = pcAuditRepository;
+        this.postRepository = postRepository;
     }
 
     public Thesis submitThesis(Long id, String conferenceFullName, String title, String summary, String authors, String topics, MultipartFile file) throws BadCredentialsException {
@@ -238,6 +240,16 @@ public class ThesisService {
         }
     }
 
+    public Post post(Long thesisID, String text) throws BadCredentialsException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) throw new BadCredentialsException("Not authorized.");
+        User user = userRepository.findByUsername(userDetails.getUsername());
+        Thesis thesis = thesisRepository.findById(thesisID).get();
+        Post post = new Post(thesis, user.getUsername(), text);
+        postRepository.save(post);
+        return post;
+    }
+
     public boolean releaseAcceptance1(String conferenceFullName) {
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
         boolean rechanged1 = true;
@@ -251,6 +263,7 @@ public class ThesisService {
                 } else if (pcAudit.getScore() <= -1) accepted = false;
             if (!rechanged1) break;
             thesis.setAccepted(accepted);
+            thesisRepository.save(thesis);
             if (accepted) for (PCAudit pcAudit : pcAudits) {
                 pcAudit.setRechanged2(true);
                 pcAuditRepository.save(pcAudit);
@@ -260,13 +273,20 @@ public class ThesisService {
     }
 
     public boolean releaseAcceptance2(String conferenceFullName) {
-        Set<PCAudit> pcAudits = pcAuditRepository.findAllByAuthority_ConferenceFullName(conferenceFullName);
+        Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
         boolean rechanged2 = true;
-        for (PCAudit pcAudit : pcAudits)
-            if (!pcAudit.isRechanged2()) {
-                rechanged2 = false;
-                break;
-            }
+        for (Thesis thesis : theses) {
+            Set<PCAudit> pcAudits = thesis.getPcAudits();
+            boolean accepted = true;
+            for (PCAudit pcAudit : pcAudits)
+                if (!pcAudit.isRechanged2()) {
+                    rechanged2 = false;
+                    break;
+                } else if (pcAudit.getScore() <= -1) accepted = false;
+            if (!rechanged2) break;
+            thesis.setAccepted(accepted);
+            thesisRepository.save(thesis);
+        }
         return rechanged2;
     }
 }

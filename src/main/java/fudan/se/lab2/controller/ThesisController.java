@@ -2,6 +2,7 @@ package fudan.se.lab2.controller;
 
 import fudan.se.lab2.controller.request.AuditApplicationRequest;
 import fudan.se.lab2.controller.request.AuditThesisRequest;
+import fudan.se.lab2.controller.request.PostRequest;
 import fudan.se.lab2.controller.request.SearchRequest;
 import fudan.se.lab2.service.ThesisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,11 @@ public class ThesisController {
     @GetMapping("/downloadThesis")
     public void downloadThesis(@RequestParam Long id, HttpServletResponse response) {
         thesisService.downloadThesis(id, response);
+    }
+
+    @PostMapping("/post")
+    public ResponseEntity<?> post(@RequestParam PostRequest request) {
+        return ResponseEntity.ok(thesisService.post(request.getThesisID(), request.getText()));
     }
 
     @PostMapping("/releaseAcceptance1")

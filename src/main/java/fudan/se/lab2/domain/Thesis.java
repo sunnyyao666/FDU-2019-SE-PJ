@@ -37,6 +37,9 @@ public class Thesis implements Serializable {
     @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "thesis")
     private Set<PCAudit> pcAudits = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER, mappedBy = "thesis")
+    private Set<Post> posts = new HashSet<>();
+
     public Thesis() {
     }
 
@@ -143,5 +146,13 @@ public class Thesis implements Serializable {
 
     public void setPcAudits(Set<PCAudit> pcAudits) {
         this.pcAudits = pcAudits;
+    }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
     }
 }
