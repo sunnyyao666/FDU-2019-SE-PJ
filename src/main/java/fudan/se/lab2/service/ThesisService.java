@@ -96,20 +96,18 @@ public class ThesisService {
                 pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
             pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
             Collections.sort(pcMembers);
+            if (corresponding(thesis, pcMembers) == 3) continue;
+            if (pcMembers.size() == authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size()) {
+                pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
+                return "Fail to distribute";
+            }
+            pcAuditRepository.deleteAllByThesisID(thesis.getId());
+            pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
+            pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
+            Collections.sort(pcMembers);
             if (corresponding(thesis, pcMembers) < 3) {
-                if (pcMembers.size() < authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName).size()) {
-                    pcAuditRepository.deleteAllByThesisID(thesis.getId());
-                    pcMembers = new ArrayList<>(authorityRepository.findAllByAuthorityAndConferenceFullName("PC Member", conferenceFullName));
-                    pcMembers.addAll(authorityRepository.findAllByAuthorityAndConferenceFullName("Chair", conferenceFullName));
-                    Collections.sort(pcMembers);
-                    if (corresponding(thesis, pcMembers) < 3) {
-                        pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
-                        return "Fail to distribute";
-                    }
-                } else {
-                    pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
-                    return "Fail to distribute";
-                }
+                pcAuditRepository.deleteAllByAuthority_ConferenceFullName(conferenceFullName);
+                return "Fail to distribute";
             }
         }
         conference.setAuditing(true);
@@ -208,20 +206,8 @@ public class ThesisService {
         pcAudit.setComment(request.getComment());
         pcAudit.setConfidence(request.getConfidence());
         pcAudit.setAudited(true);
-        if (request.getStage() == 1) {
-            pcAudit.setRechanged1(true);
-            Set<PCAudit> pcAudits = pcAuditRepository.findAllByThesisID(request.getThesisID());
-            boolean accepted = true;
-            for (PCAudit pcAudit1 : pcAudits)
-                if ((!pcAudit1.isRechanged1()) || (pcAudit1.getScore() <= -1)) {
-                    accepted = false;
-                    break;
-                }
-            if (accepted) for (PCAudit pcAudit1 : pcAudits) {
-                pcAudit1.setRechanged2(true);
-                pcAuditRepository.save(pcAudit1);
-            }
-        } else if (request.getStage() == 2) pcAudit.setRechanged2(true);
+        if (request.getStage() == 1) pcAudit.setRechanged1(true);
+        else if (request.getStage() == 2) pcAudit.setRechanged2(true);
         pcAuditRepository.save(pcAudit);
         return pcAudit;
     }
@@ -256,7 +242,7 @@ public class ThesisService {
         Set<Thesis> theses = thesisRepository.findAllByConferenceFullName(conferenceFullName);
         boolean rechanged1 = true;
         for (Thesis thesis : theses) {
-            Set<PCAudit> pcAudits = pcAuditRepository.findAllByThesisID(thesis.getId());
+            Set<PCAudit> pcAudits = thesis.getPcAudits();
             boolean accepted = true;
             for (PCAudit pcAudit : pcAudits)
                 if (!pcAudit.isRechanged1()) {
@@ -264,6 +250,11 @@ public class ThesisService {
                     break;
                 } else if (pcAudit.getScore() <= -1) accepted = false;
             if (!rechanged1) break;
+            thesis.setAccepted(accepted);
+            if (accepted) for (PCAudit pcAudit : pcAudits) {
+                pcAudit.setRechanged2(true);
+                pcAuditRepository.save(pcAudit);
+            }
         }
         return rechanged1;
     }
