@@ -63,28 +63,28 @@ public class ThesisService {
             if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Author", user, conferenceFullName).isEmpty())
                 authorityRepository.save(new Authority("Author", user, conferenceFullName, null));
             return thesis;
-        } else {
-            Thesis thesis;
-            if (thesisRepository.findById(id).isPresent()) thesis = thesisRepository.findById(id).get();
-            else throw new BadCredentialsException("No such thesis!");
-            thesis.setTitle(title);
-            thesis.setSummary(summary);
-            thesis.setAuthors(authors);
-            thesis.setTopics(topics);
-            if (!file.isEmpty()) {
-                String fileName = file.getOriginalFilename().substring(0, file.getOriginalFilename().indexOf("."));
-                thesis.setFileName(fileName);
-                try (FileOutputStream out = new FileOutputStream(thesisPath)) {
-                    out.write(file.getBytes());
-                    out.flush();
-                } catch (IOException ex) {
-                    throw new BadCredentialsException("Bad uploading!");
-                }
-                thesis.setPath(thesisPath);
-            }
-            thesisRepository.save(thesis);
-            return thesis;
         }
+        Thesis thesis;
+        if (thesisRepository.findById(id).isPresent()) thesis = thesisRepository.findById(id).get();
+        else throw new BadCredentialsException("No such thesis!");
+        thesis.setTitle(title);
+        thesis.setSummary(summary);
+        thesis.setAuthors(authors);
+        thesis.setTopics(topics);
+        if (!file.isEmpty()) {
+            String fileName = file.getOriginalFilename().substring(0, file.getOriginalFilename().indexOf("."));
+            thesis.setFileName(fileName);
+            try (FileOutputStream out = new FileOutputStream(thesisPath)) {
+                out.write(file.getBytes());
+                out.flush();
+            } catch (IOException ex) {
+                throw new BadCredentialsException("Bad uploading!");
+            }
+            thesis.setPath(thesisPath);
+        }
+        thesisRepository.save(thesis);
+        return thesis;
+
     }
 
     public String startAudit1(String conferenceFullName) {
