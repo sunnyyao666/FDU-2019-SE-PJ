@@ -7,7 +7,8 @@ public class AuditApplicationRequest {
     private String conferenceFullName;
     private boolean passed;
 
-    public AuditApplicationRequest(){}
+    public AuditApplicationRequest(){
+    }
 
     public String getConferenceFullName() {
         return conferenceFullName;

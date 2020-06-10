@@ -64,7 +64,9 @@ public class ThesisService {
                 authorityRepository.save(new Authority("Author", user, conferenceFullName, null));
             return thesis;
         } else {
-            Thesis thesis = thesisRepository.findById(id).get();
+            Thesis thesis;
+            if (thesisRepository.findById(id).isPresent()) thesis = thesisRepository.findById(id).get();
+            else throw new BadCredentialsException("No such thesis!");
             thesis.setTitle(title);
             thesis.setSummary(summary);
             thesis.setAuthors(authors);
@@ -229,7 +231,9 @@ public class ThesisService {
     }
 
     public void downloadThesis(Long id, HttpServletResponse response) throws BadCredentialsException {
-        Thesis thesis = thesisRepository.findById(id).get();
+        Thesis thesis;
+        if (thesisRepository.findById(id).isPresent()) thesis = thesisRepository.findById(id).get();
+        else throw new BadCredentialsException("No such thesis!");
         try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
              OutputStream outputStream = response.getOutputStream();) {
             response.setContentType("application/octet-stream;charset=UTF-8");
@@ -244,7 +248,9 @@ public class ThesisService {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
-        Thesis thesis = thesisRepository.findById(thesisID).get();
+        Thesis thesis;
+        if (thesisRepository.findById(thesisID).isPresent()) thesis = thesisRepository.findById(thesisID).get();
+        else throw new BadCredentialsException("No such thesis!");
         Post post = new Post(thesis, user.getUsername(), text);
         postRepository.save(post);
         return post;

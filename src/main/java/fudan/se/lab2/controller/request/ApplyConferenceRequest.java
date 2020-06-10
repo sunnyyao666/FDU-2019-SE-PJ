@@ -89,19 +89,19 @@ public class ApplyConferenceRequest {
         this.deadline = deadline;
     }
 
-    public void setReleaseTime(Date releaseTime) {
-        this.releaseTime = releaseTime;
-    }
-
     public Date getReleaseTime() {
         return releaseTime;
     }
 
-    public void setTopics(String topics) {
-        this.topics = topics;
+    public void setReleaseTime(Date releaseTime) {
+        this.releaseTime = releaseTime;
     }
 
     public String getTopics() {
         return topics;
+    }
+
+    public void setTopics(String topics) {
+        this.topics = topics;
     }
 }
