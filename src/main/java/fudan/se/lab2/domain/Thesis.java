@@ -31,6 +31,11 @@ public class Thesis implements Serializable {
     private String topics;
     private String fileName;
     private String path;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String rebuttal;
+
     private boolean audited;
     private boolean accepted;
 
@@ -122,6 +127,14 @@ public class Thesis implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getRebuttal() {
+        return rebuttal;
+    }
+
+    public void setRebuttal(String rebuttal) {
+        this.rebuttal = rebuttal;
     }
 
     public boolean isAudited() {

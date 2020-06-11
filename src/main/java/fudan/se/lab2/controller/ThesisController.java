@@ -70,4 +70,9 @@ public class ThesisController {
     public ResponseEntity<?> releaseAcceptance2(@RequestBody SearchRequest request) {
         return ResponseEntity.ok(thesisService.releaseAcceptance2(request.getConferenceFullName()));
     }
+
+    @PostMapping("/rebut")
+    public ResponseEntity<?> rebut(@RequestBody PostRequest request) {
+        return ResponseEntity.ok(thesisService.rebut(request.getThesisID(), request.getText()));
+    }
 }

@@ -1,9 +1,6 @@
 package fudan.se.lab2.security.jwt;
 
 import fudan.se.lab2.service.JwtUserDetailsService;
-import io.jsonwebtoken.ExpiredJwtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

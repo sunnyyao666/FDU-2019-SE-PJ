@@ -295,4 +295,13 @@ public class ThesisService {
         }
         return rechanged2;
     }
+
+    public Thesis rebut(Long thesisID, String text) throws BadCredentialsException {
+        Thesis thesis;
+        if (thesisRepository.findById(thesisID).isPresent()) thesis = thesisRepository.findById(thesisID).get();
+        else throw new BadCredentialsException("No such thesis!");
+        thesis.setRebuttal(text);
+        thesisRepository.save(thesis);
+        return thesis;
+    }
 }
