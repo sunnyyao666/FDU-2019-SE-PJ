@@ -65,7 +65,7 @@ public class ThesisService {
             return thesis;
         }
         Thesis thesis;
-        Optional<Thesis> optionalThesis= thesisRepository.findById(id);
+        Optional<Thesis> optionalThesis = thesisRepository.findById(id);
         if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         thesis.setTitle(title);
@@ -233,7 +233,7 @@ public class ThesisService {
 
     public void downloadThesis(Long id, HttpServletResponse response) throws BadCredentialsException {
         Thesis thesis;
-        Optional<Thesis> optionalThesis= thesisRepository.findById(id);
+        Optional<Thesis> optionalThesis = thesisRepository.findById(id);
         if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
@@ -251,7 +251,7 @@ public class ThesisService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
         Thesis thesis;
-        Optional<Thesis> optionalThesis= thesisRepository.findById(thesisID);
+        Optional<Thesis> optionalThesis = thesisRepository.findById(thesisID);
         if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         Post post = new Post(thesis, user.getUsername(), text);
@@ -301,7 +301,7 @@ public class ThesisService {
 
     public Thesis rebut(Long thesisID, String text) throws BadCredentialsException {
         Thesis thesis;
-        Optional<Thesis> optionalThesis= thesisRepository.findById(thesisID);
+        Optional<Thesis> optionalThesis = thesisRepository.findById(thesisID);
         if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         thesis.setRebuttal(text);
