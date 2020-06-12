@@ -65,7 +65,8 @@ public class ThesisService {
             return thesis;
         }
         Thesis thesis;
-        if (thesisRepository.findById(id).isPresent()) thesis = thesisRepository.findById(id).get();
+        Optional<Thesis> optionalThesis= thesisRepository.findById(id);
+        if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         thesis.setTitle(title);
         thesis.setSummary(summary);
@@ -232,7 +233,8 @@ public class ThesisService {
 
     public void downloadThesis(Long id, HttpServletResponse response) throws BadCredentialsException {
         Thesis thesis;
-        if (thesisRepository.findById(id).isPresent()) thesis = thesisRepository.findById(id).get();
+        Optional<Thesis> optionalThesis= thesisRepository.findById(id);
+        if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
              OutputStream outputStream = response.getOutputStream();) {
@@ -249,7 +251,8 @@ public class ThesisService {
         if (userDetails == null) throw new BadCredentialsException("Not authorized.");
         User user = userRepository.findByUsername(userDetails.getUsername());
         Thesis thesis;
-        if (thesisRepository.findById(thesisID).isPresent()) thesis = thesisRepository.findById(thesisID).get();
+        Optional<Thesis> optionalThesis= thesisRepository.findById(thesisID);
+        if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         Post post = new Post(thesis, user.getUsername(), text);
         postRepository.save(post);
@@ -298,7 +301,8 @@ public class ThesisService {
 
     public Thesis rebut(Long thesisID, String text) throws BadCredentialsException {
         Thesis thesis;
-        if (thesisRepository.findById(thesisID).isPresent()) thesis = thesisRepository.findById(thesisID).get();
+        Optional<Thesis> optionalThesis= thesisRepository.findById(thesisID);
+        if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         thesis.setRebuttal(text);
         thesisRepository.save(thesis);
