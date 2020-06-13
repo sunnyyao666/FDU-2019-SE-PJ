@@ -316,4 +316,12 @@ public class ThesisService {
         thesisRepository.save(thesis);
         return thesis;
     }
+
+    public Thesis getThesis(Long thesisID) throws BadCredentialsException {
+        Thesis thesis;
+        Optional<Thesis> optionalThesis = thesisRepository.findById(thesisID);
+        if (optionalThesis.isPresent()) thesis = optionalThesis.get();
+        else throw new BadCredentialsException("No such thesis!");
+        return thesis;
+    }
 }

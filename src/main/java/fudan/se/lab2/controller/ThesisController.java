@@ -75,4 +75,9 @@ public class ThesisController {
     public ResponseEntity<?> rebut(@RequestBody PostRequest request) {
         return ResponseEntity.ok(thesisService.rebut(request.getThesisID(), request.getText()));
     }
+
+    @PostMapping("/getThesis")
+    public ResponseEntity<?> getThesis(@RequestBody PostRequest request) {
+        return ResponseEntity.ok(thesisService.getThesis(request.getThesisID()));
+    }
 }
