@@ -270,7 +270,7 @@ public class ThesisService {
                 if (!pcAudit.isRechanged1()) {
                     rechanged1 = false;
                     break;
-                } else if (pcAudit.getScore() <= -1) accepted = false;
+                } else if (pcAudit.getScore() <= 2) accepted = false;
             if (!rechanged1) break;
             thesis.setAccepted(accepted);
             thesisRepository.save(thesis);
@@ -296,7 +296,7 @@ public class ThesisService {
                 if (!pcAudit.isRechanged2()) {
                     rechanged2 = false;
                     break;
-                } else if (pcAudit.getScore() <= -1) accepted = false;
+                } else if (pcAudit.getScore() <= 2) accepted = false;
             if (!rechanged2) break;
             thesis.setAccepted(accepted);
             thesisRepository.save(thesis);
