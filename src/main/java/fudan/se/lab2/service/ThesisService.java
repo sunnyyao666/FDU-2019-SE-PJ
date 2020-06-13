@@ -227,6 +227,7 @@ public class ThesisService {
         }
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);
         conference.setSubmitting(true);
+        conference.setRechanging1(true);
         conferenceRepository.save(conference);
         return true;
     }
@@ -277,6 +278,10 @@ public class ThesisService {
                 pcAudit.setRechanged2(true);
                 pcAuditRepository.save(pcAudit);
             }
+            Conference conference = conferenceRepository.findByFullName(conferenceFullName);
+            conference.setRechanging1(false);
+            conference.setRechanging2(true);
+            conferenceRepository.save(conference);
         }
         return rechanged1;
     }
@@ -295,6 +300,9 @@ public class ThesisService {
             if (!rechanged2) break;
             thesis.setAccepted(accepted);
             thesisRepository.save(thesis);
+            Conference conference = conferenceRepository.findByFullName(conferenceFullName);
+            conference.setRechanging2(false);
+            conferenceRepository.save(conference);
         }
         return rechanged2;
     }

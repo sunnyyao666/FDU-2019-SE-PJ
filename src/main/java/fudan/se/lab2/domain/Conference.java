@@ -30,6 +30,8 @@ public class Conference implements Serializable {
     private boolean valid; //是否通过审核
     private boolean submitting; //是否开放投稿
     private boolean auditing; //是否开放审稿
+    private boolean rechanging1;//是否开放第一次讨论
+    private boolean rechanging2;//是否开放第二次讨论
 
     @ManyToOne
     @JsonIgnore
@@ -55,6 +57,8 @@ public class Conference implements Serializable {
         this.valid = false;
         this.submitting = false;
         this.auditing = false;
+        this.rechanging1 = false;
+        this.rechanging2 = false;
     }
 
     public String getFullName() {
@@ -172,5 +176,21 @@ public class Conference implements Serializable {
 
     public void setAuditing(boolean auditing) {
         this.auditing = auditing;
+    }
+
+    public boolean isRechanging1() {
+        return rechanging1;
+    }
+
+    public void setRechanging1(boolean rechanging1) {
+        this.rechanging1 = rechanging1;
+    }
+
+    public boolean isRechanging2() {
+        return rechanging2;
+    }
+
+    public void setRechanging2(boolean rechanging2) {
+        this.rechanging2 = rechanging2;
     }
 }
