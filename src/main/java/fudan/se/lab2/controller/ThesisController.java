@@ -57,7 +57,7 @@ public class ThesisController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> post(@RequestParam PostRequest request) {
+    public ResponseEntity<?> post(@RequestBody PostRequest request) {
         return ResponseEntity.ok(thesisService.post(request.getThesisID(), request.getText()));
     }
 
