@@ -324,4 +324,8 @@ public class ThesisService {
         else throw new BadCredentialsException("No such thesis!");
         return thesis;
     }
+
+    public Set<Thesis> getAllThesis(String conferenceName) {
+        return thesisRepository.findAllByConferenceFullName(conferenceName);
+    }
 }
