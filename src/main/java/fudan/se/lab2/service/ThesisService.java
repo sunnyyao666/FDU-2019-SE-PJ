@@ -325,7 +325,7 @@ public class ThesisService {
         return thesis;
     }
 
-    public Set<Thesis> getAllThesis(String conferenceName) {
+    public Set<Thesis> getAllTheses(String conferenceName) {
         return thesisRepository.findAllByConferenceFullName(conferenceName);
     }
 }

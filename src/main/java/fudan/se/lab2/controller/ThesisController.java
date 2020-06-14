@@ -81,8 +81,8 @@ public class ThesisController {
         return ResponseEntity.ok(thesisService.getThesis(request.getThesisID()));
     }
 
-    @PostMapping("/getAllThesis")
+    @PostMapping("/getAllTheses")
     public ResponseEntity<?> getAllThesis(@RequestBody SearchRequest request) {
-        return ResponseEntity.ok(thesisService.getAllThesis(request.getConferenceFullName()));
+        return ResponseEntity.ok(thesisService.getAllTheses(request.getConferenceFullName()));
     }
 }
