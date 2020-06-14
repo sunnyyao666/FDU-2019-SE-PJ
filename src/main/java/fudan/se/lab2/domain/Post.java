@@ -3,6 +3,7 @@ package fudan.se.lab2.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
  * @author YHT
  */
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Post implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
