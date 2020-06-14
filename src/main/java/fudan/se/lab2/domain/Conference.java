@@ -31,6 +31,7 @@ public class Conference implements Serializable {
     private boolean submitting; //是否开放投稿
     private boolean auditing; //是否开放审稿
     private boolean rechanging1;//是否开放第一次讨论
+    private boolean rebutting;//是否开放rebut
     private boolean rechanging2;//是否开放第二次讨论
 
     @ManyToOne
@@ -58,6 +59,7 @@ public class Conference implements Serializable {
         this.submitting = false;
         this.auditing = false;
         this.rechanging1 = false;
+        this.rebutting = false;
         this.rechanging2 = false;
     }
 
@@ -184,6 +186,14 @@ public class Conference implements Serializable {
 
     public void setRechanging1(boolean rechanging1) {
         this.rechanging1 = rechanging1;
+    }
+
+    public boolean isRebutting() {
+        return rebutting;
+    }
+
+    public void setRebutting(boolean rebutting) {
+        this.rebutting = rebutting;
     }
 
     public boolean isRechanging2() {

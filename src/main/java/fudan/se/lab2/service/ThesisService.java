@@ -280,10 +280,18 @@ public class ThesisService {
             }
             Conference conference = conferenceRepository.findByFullName(conferenceFullName);
             conference.setRechanging1(false);
-            conference.setRechanging2(true);
+            conference.setRebutting(true);
             conferenceRepository.save(conference);
         }
         return rechanged1;
+    }
+
+    public boolean endRebut(String conferenceFullName) {
+        Conference conference = conferenceRepository.findByFullName(conferenceFullName);
+        conference.setRebutting(false);
+        conference.setRechanging2(true);
+        conferenceRepository.save(conference);
+        return true;
     }
 
     public boolean releaseAcceptance2(String conferenceFullName) {

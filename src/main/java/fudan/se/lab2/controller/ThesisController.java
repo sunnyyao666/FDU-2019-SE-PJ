@@ -66,6 +66,11 @@ public class ThesisController {
         return ResponseEntity.ok(thesisService.releaseAcceptance1(request.getConferenceFullName()));
     }
 
+    @PostMapping("/endRebut")
+    public ResponseEntity<?> endRebut(@RequestBody SearchRequest request) {
+        return ResponseEntity.ok(thesisService.endRebut(request.getConferenceFullName()));
+    }
+
     @PostMapping("/releaseAcceptance2")
     public ResponseEntity<?> releaseAcceptance2(@RequestBody SearchRequest request) {
         return ResponseEntity.ok(thesisService.releaseAcceptance2(request.getConferenceFullName()));
