@@ -1,13 +1,12 @@
 package fudan.se.lab2.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author YHT
@@ -32,9 +31,9 @@ public class Post implements Serializable {
     @Column(columnDefinition = "text")
     private String text;
 
-    @Column(name = "CREATE_TIME", insertable = false, updatable = false)
-    @Generated(GenerationTime.INSERT)
-    private Timestamp createTime;
+    @CreatedDate
+    @Column(name = "create_time")
+    private Date createTime;
 
     public Post() {
     }
@@ -75,7 +74,11 @@ public class Post implements Serializable {
         this.text = text;
     }
 
-    public Timestamp getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
