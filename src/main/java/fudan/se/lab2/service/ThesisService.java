@@ -301,7 +301,7 @@ public class ThesisService {
             thesis.setAccepted(accepted);
             thesisRepository.save(thesis);
             Conference conference = conferenceRepository.findByFullName(conferenceFullName);
-            conference.setRechanging2(false);
+            conference.setRechanging1(true);
             conferenceRepository.save(conference);
         }
         return rechanged2;
