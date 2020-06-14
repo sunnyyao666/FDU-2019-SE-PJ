@@ -5,6 +5,7 @@ import fudan.se.lab2.domain.Authority;
 import fudan.se.lab2.domain.PCAudit;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -19,7 +20,9 @@ public interface PCAuditRepository extends CrudRepository<PCAudit, Long> {
 
     Set<PCAudit> findAllByThesisID(Long thesisID);
 
+    @Transactional
     void deleteAllByAuthority_ConferenceFullName(String conferenceFullName);
 
+    @Transactional
     void deleteAllByThesisID(Long thesisID);
 }
