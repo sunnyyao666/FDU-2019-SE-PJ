@@ -23,10 +23,10 @@ import java.util.Set;
  */
 @Service
 public class AuthService {
-    private UserRepository userRepository;
-    private AuthorityRepository authorityRepository;
-    private ConferenceRepository conferenceRepository;
-    private PasswordEncoder encoder;
+    private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
+    private final ConferenceRepository conferenceRepository;
+    private final PasswordEncoder encoder;
 
     @Autowired
     public AuthService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, PasswordEncoder encoder) {
@@ -61,7 +61,7 @@ public class AuthService {
 
     public Set<User> searchUsers(String text, String conferenceFullName) {
         Set<User> users = userRepository.findAllByFullNameContaining(text);
-        Set<User> resultUsers = new HashSet<User>();
+        Set<User> resultUsers = new HashSet<>();
         for (User user : users)
             if (authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("PC Member", user, conferenceFullName).isEmpty()
                     && authorityRepository.findAllByAuthorityContainingAndUserAndConferenceFullName("Chair", user, conferenceFullName).isEmpty()

@@ -24,12 +24,12 @@ import java.util.*;
  */
 @Service
 public class ThesisService {
-    private UserRepository userRepository;
-    private AuthorityRepository authorityRepository;
-    private ConferenceRepository conferenceRepository;
-    private ThesisRepository thesisRepository;
-    private PCAuditRepository pcAuditRepository;
-    private PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
+    private final ConferenceRepository conferenceRepository;
+    private final ThesisRepository thesisRepository;
+    private final PCAuditRepository pcAuditRepository;
+    private final PostRepository postRepository;
 
     @Autowired
     public ThesisService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository, ThesisRepository thesisRepository, PCAuditRepository pcAuditRepository, PostRepository postRepository) {
@@ -85,7 +85,6 @@ public class ThesisService {
         }
         thesisRepository.save(thesis);
         return thesis;
-
     }
 
     public String startAudit1(String conferenceFullName) {
@@ -238,7 +237,7 @@ public class ThesisService {
         if (optionalThesis.isPresent()) thesis = optionalThesis.get();
         else throw new BadCredentialsException("No such thesis!");
         try (InputStream inputStream = new FileInputStream(new File(thesis.getPath()));
-             OutputStream outputStream = response.getOutputStream();) {
+             OutputStream outputStream = response.getOutputStream()) {
             response.setContentType("application/octet-stream;charset=UTF-8");
             response.addHeader("Content-Disposition", "attachment;filename=" + thesis.getFileName());
             IOUtils.copy(inputStream, outputStream);

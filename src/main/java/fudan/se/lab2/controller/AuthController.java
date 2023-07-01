@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class AuthController {
-    private AuthService authService;
-    private JwtTokenUtil jwtTokenUtil;
+    private final AuthService authService;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     public AuthController(AuthService authService, JwtTokenUtil jwtTokenUtil) {

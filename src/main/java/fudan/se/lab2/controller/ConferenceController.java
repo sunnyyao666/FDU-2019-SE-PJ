@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class ConferenceController {
-    private ConferenceService conferenceService;
+    private final ConferenceService conferenceService;
 
     @Autowired
     public ConferenceController(ConferenceService conferenceService) {

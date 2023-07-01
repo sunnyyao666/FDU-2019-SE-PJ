@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 public class ThesisController {
-    private ThesisService thesisService;
+    private final ThesisService thesisService;
 
     @Autowired
     public ThesisController(ThesisService thesisService) {

@@ -21,9 +21,9 @@ import java.util.Set;
  */
 @Service
 public class ConferenceService {
-    private UserRepository userRepository;
-    private AuthorityRepository authorityRepository;
-    private ConferenceRepository conferenceRepository;
+    private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
+    private final ConferenceRepository conferenceRepository;
 
     @Autowired
     public ConferenceService(UserRepository userRepository, AuthorityRepository authorityRepository, ConferenceRepository conferenceRepository) {
@@ -69,7 +69,6 @@ public class ConferenceService {
     public Conference searchConference(String conferenceFullName) {
         return conferenceRepository.findByFullName(conferenceFullName);
     }
-
 
     public boolean changeSubmissionState(String conferenceFullName, boolean passed) {
         Conference conference = conferenceRepository.findByFullName(conferenceFullName);

@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import sun.security.util.SecurityConstants;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -24,7 +25,7 @@ public class JwtTokenUtil implements Serializable {
 
     private static final long serialVersionUID = -3839549913040578986L;
 
-    private JwtConfigProperties jwtConfigProperties;
+    private final JwtConfigProperties jwtConfigProperties;
 
     public JwtTokenUtil(JwtConfigProperties jwtConfigProperties) {
         this.jwtConfigProperties = jwtConfigProperties;
